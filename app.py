@@ -1,11 +1,8 @@
 import os
-from dotenv import load_dotenv
 import streamlit as st
 from openai import OpenAI
 
-# Load environment variables from .env file
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # -- Preset Questions --
 QUESTIONS = [
