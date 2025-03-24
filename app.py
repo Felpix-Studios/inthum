@@ -42,7 +42,7 @@ def get_assistant_follow_up(preset_question, user_response):
 def get_final_score(responses):
     prompt = (
         "You are an expert psychologist. Evaluate the following user responses to the questions and their follow-ups, "
-        "and provide a final score on a scale from 1 (low) to 10 (high) along with a brief explanation for the score.\n\n"
+        "and provide a final score on a scale from 1 (low) to 10 (high) along with a brief explanation for the score. If the user is clearly not making an effort, your final score should be 1. In your final assessment, make sure to address the user with second-person pronouns.\n\n"
         "User responses:\n\n"
     )
     for idx, resp in enumerate(responses, start=1):
@@ -157,12 +157,12 @@ def main():
                     st.session_state.chat_history.append({"role": "assistant", "content": next_preset})
                     st.session_state.phase = "preset"
                 else:
+                    st.session_state.chat_history.append({
+                        "role": "assistant",
+                        "content": "All preset questions have been answered! Your final assessment is being generated..."
+                    })
                     st.session_state.phase = "final"
         
-        # Final assessment will be generated automatically once phase is "final"
-    
-    # When phase is final and the final assessment hasn't been generated yet,
-    # wait 1 second, generate the assessment, and mark it as generated.
     if st.session_state.phase == "final" and not st.session_state.final_generated:
         time.sleep(0.5)
         final_assessment = get_final_score(st.session_state.responses)
