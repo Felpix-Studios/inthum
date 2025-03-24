@@ -1,8 +1,11 @@
 import os
+from dotenv import load_dotenv
 import streamlit as st
 from openai import OpenAI
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+
+client = OpenAI(api_key=openai.api_key)
 
 # -- Preset Questions --
 QUESTIONS = [
@@ -16,17 +19,14 @@ QUESTIONS = [
 # -- Helper Functions --
 
 def get_assistant_follow_up(preset_question, user_response):
-    """
-    Given the preset question and the user's answer,
-    request ChatGPT to generate 2-3 probing follow-up questions
-    plus an importance scale question (from 1 to 5).
-    """
     prompt = (
         f"The user was asked: \"{preset_question}\"\n"
         f"And responded: \"{user_response}\"\n\n"
-        "Please provide 2-3 follow-up or probing questions to learn more about the user's thoughts. "
-        "Then ask an importance scale question (from 1 to 5) regarding how much the user agrees with a relevant statement. "
-        "Format your response with the follow-up questions first (each on its own line) and then the scale question."
+        "You are an expert psycologist analyzing the user's response for their potential of intellectual humulity"
+        "Please provide exactly 2 or 3 short follow-up questions (each on its own line) with no extra formatting, "
+        "no numbering, no bullet points, and no styling. Then on a separate line, provide one final scale question "
+        "from 1 to 5 about how strongly the user agrees with a relevant statement. "
+        "Return only the plain question text."
     )
     messages = [
         {"role": "system", "content": "You are a curious and thoughtful assistant."},
@@ -40,20 +40,26 @@ def get_assistant_follow_up(preset_question, user_response):
     return response.choices[0].message.content
 
 def get_final_score(responses):
-    """
-    After all questions have been answered, this function sends all
-    the user responses to ChatGPT to calculate a final score along
-    with a brief explanation.
-    """
+
     prompt = (
-        "You are an expert psychologist. Evaluate the following user responses to the questions and their follow-ups, "
-        "and provide a final score on a scale from 1 (low) to 10 (high) along with a brief explanation for the score. "
+        "You are an expert psychologist. Your task is to interpret how the user's answers and responses reflect thier intellectual"
+        "humility. Use the following definition of intellectual humility: Intellectual humility is the "
+        "recognition that our knowledge and understanding are always limited and subject to growth or change." 
+        "It involves acknowledging that we can be wrong, while staying open to learning from new information or perspectives."
+        "Individuals who exhibit intellectual humility demonstrate curiosity, actively seeking out opposing viewpoints to refine their own thinking."
+        "They also tend to be self-reflective about their cognitive biases and willing to correct mistakes in pursuit of truth."
+        "In essence, intellectual humility emphasizes understanding over ego, valuing the collaborative search for accuracy above the need to be right."
+        "Evaluate the following user responses to the questions and their follow-ups, "
+        "and provide a final score on a scale from 1 (low intellectual humility) to 10 (high intellectual humility) along with a short explanation for the score.\n\n"
         "User responses:\n\n"
     )
     for idx, resp in enumerate(responses, start=1):
         prompt += f"Question {idx}:\n"
         prompt += f"Preset Answer: {resp.get('preset_answer', '')}\n"
-        prompt += f"Follow-up Answer: {resp.get('followup_answer', '')}\n\n"
+        if 'followup_answers' in resp:
+            for i, ans in enumerate(resp['followup_answers'], start=1):
+                prompt += f"Follow-up {i} Answer: {ans}\n"
+        prompt += "\n"
     messages = [
         {"role": "system", "content": "You are an expert psychologist."},
         {"role": "user", "content": prompt}
@@ -83,75 +89,113 @@ def main():
         """
         This app will ask you a series of introspective questions via a chat interface.
         
+        **Flow**:
         1. You’ll first answer a preset question.
-        2. The AI will then generate follow-up/probing questions plus an importance scale question.
-        3. You answer these follow-ups.
-        
-        Once all questions are complete, type **final** to receive your final assessment.
+        2. The AI will generate a queue of follow-up questions (including the final scale question).
+        3. You answer each follow-up one by one (each appears in its own message).
+        4. Once all preset questions are complete, type **final** to receive your final assessment.
         """
     )
     
-    # Initialize session state variables if they don't exist
+    # Initialize session state variables if they don't exist.
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     if "current_question_index" not in st.session_state:
         st.session_state.current_question_index = 0  # Index for preset questions
     if "phase" not in st.session_state:
-        st.session_state.phase = "preset"  # "preset", "follow_up", or "final"
+        st.session_state.phase = "preset"  # can be "preset", "follow_up", or "final"
     if "responses" not in st.session_state:
         st.session_state.responses = []  # Store answers for each preset question
     if "current_response" not in st.session_state:
-        st.session_state.current_response = {}  # Temp storage for current question
+        st.session_state.current_response = {}  # Temporary storage for the current question
+    if "follow_up_queue" not in st.session_state:
+        st.session_state.follow_up_queue = []
+    if "follow_up_index" not in st.session_state:
+        st.session_state.follow_up_index = 0
+    if "follow_up_answers" not in st.session_state:
+        st.session_state.follow_up_answers = []
 
     # On initial load, send the first preset question if the chat is empty.
     if not st.session_state.chat_history and st.session_state.current_question_index < len(QUESTIONS):
         first_question = QUESTIONS[st.session_state.current_question_index]
         st.session_state.chat_history.append({"role": "assistant", "content": first_question})
     
-    # Display the full chat history.
-    display_chat()
-
-    # Get user input from the chat input box.
     user_input = st.chat_input("Your message:")
     if user_input:
-        # Depending on the current phase, process the input.
+        # --- PHASE 1: PRESET ANSWER ---
         if st.session_state.phase == "preset":
-            # Save the user's answer to the preset question.
-            st.session_state.current_response["preset_answer"] = user_input
-            st.session_state.current_response["question"] = QUESTIONS[st.session_state.current_question_index]
+            # User has answered the preset question.
             st.session_state.chat_history.append({"role": "user", "content": user_input})
             
-            # Generate follow-up questions.
-            with st.spinner("Generating follow-up questions..."):
-                follow_up = get_assistant_follow_up(QUESTIONS[st.session_state.current_question_index], user_input)
-            st.session_state.chat_history.append({"role": "assistant", "content": follow_up})
+            # Store the user's preset answer.
+            st.session_state.current_response["preset_answer"] = user_input
+            st.session_state.current_response["question"] = QUESTIONS[st.session_state.current_question_index]
+            
+            # Append a temporary assistant message showing the spinner/loading text.
+            spinner_index = len(st.session_state.chat_history)
+            st.session_state.chat_history.append({"role": "assistant", "content": "Generating follow-up questions..."})
+            
+            # Generate the follow-up text.
+            follow_up_text = get_assistant_follow_up(
+                QUESTIONS[st.session_state.current_question_index],
+                user_input
+            )
+            
+            # Split the follow-up content into individual lines.
+            lines = [line.strip() for line in follow_up_text.split("\n") if line.strip()]
+            st.session_state.follow_up_queue = lines
+            st.session_state.follow_up_index = 0
+            st.session_state.follow_up_answers = []
+            
+            # Replace the spinner message with the first follow-up question, if available.
+            if lines:
+                st.session_state.chat_history[spinner_index]["content"] = lines[0]
+                st.session_state.follow_up_index = 1
+            else:
+                st.session_state.chat_history[spinner_index]["content"] = "No follow-up questions received."
+            
+            # Move to follow_up phase.
             st.session_state.phase = "follow_up"
 
+        # --- PHASE 2: FOLLOW-UP ANSWERS ---
         elif st.session_state.phase == "follow_up":
-            # Save the user's answer to the follow-up questions.
-            st.session_state.current_response["followup_answer"] = user_input
+            # User is answering a follow-up question.
             st.session_state.chat_history.append({"role": "user", "content": user_input})
-            # Store the complete responses.
-            st.session_state.responses.append(st.session_state.current_response)
-            st.session_state.current_response = {}
-            st.session_state.current_question_index += 1
-            if st.session_state.current_question_index < len(QUESTIONS):
-                # Send the next preset question.
-                next_question = QUESTIONS[st.session_state.current_question_index]
+            st.session_state.follow_up_answers.append(user_input)
+            
+            # Check if there is another follow-up question.
+            if st.session_state.follow_up_index < len(st.session_state.follow_up_queue):
+                next_question = st.session_state.follow_up_queue[st.session_state.follow_up_index]
                 st.session_state.chat_history.append({"role": "assistant", "content": next_question})
-                st.session_state.phase = "preset"
+                st.session_state.follow_up_index += 1
             else:
-                # All questions answered; prompt user to type "final".
-                st.session_state.chat_history.append({
-                    "role": "assistant",
-                    "content": "All preset questions have been answered! Type **final** to receive your final assessment."
-                })
-                st.session_state.phase = "final"
+                # All follow-up questions for this preset have been answered.
+                st.session_state.current_response["followup_answers"] = st.session_state.follow_up_answers
+                st.session_state.responses.append(st.session_state.current_response)
+                
+                # Reset for the next preset question.
+                st.session_state.current_response = {}
+                st.session_state.follow_up_queue = []
+                st.session_state.follow_up_index = 0
+                st.session_state.follow_up_answers = []
+                
+                st.session_state.current_question_index += 1
+                if st.session_state.current_question_index < len(QUESTIONS):
+                    next_preset = QUESTIONS[st.session_state.current_question_index]
+                    st.session_state.chat_history.append({"role": "assistant", "content": next_preset})
+                    st.session_state.phase = "preset"
+                else:
+                    # All preset questions answered.
+                    st.session_state.chat_history.append({
+                        "role": "assistant",
+                        "content": "All preset questions have been answered! Type **final** to receive your final assessment."
+                    })
+                    st.session_state.phase = "final"
 
+        # --- PHASE 3: FINAL ASSESSMENT ---
         elif st.session_state.phase == "final":
-            # Trigger final assessment if the user types "final".
+            st.session_state.chat_history.append({"role": "user", "content": user_input})
             if user_input.strip().lower() == "final":
-                st.session_state.chat_history.append({"role": "user", "content": user_input})
                 with st.spinner("Calculating your assessment..."):
                     final_assessment = get_final_score(st.session_state.responses)
                 st.session_state.chat_history.append({
@@ -163,7 +207,9 @@ def main():
                     "role": "assistant",
                     "content": "Please type **final** to receive your final assessment."
                 })
-        st.experimental_rerun()
+    
+    # Finally, display the updated chat history.
+    display_chat()
 
 if __name__ == "__main__":
     main()
