@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 import streamlit as st
 from openai import OpenAI
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+key = st.secrets["OPENAI_API_KEY"]
 
-client = OpenAI(api_key=openai.api_key)
+client = OpenAI(api_key=key)
 
 # -- Preset Questions --
 QUESTIONS = [
