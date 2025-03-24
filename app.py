@@ -94,7 +94,7 @@ def main():
         1. You’ll first answer a preset question.
         2. The AI will generate a queue of follow-up questions (including the final scale question).
         3. You answer each follow-up one by one (each appears in its own message).
-        4. Once all preset questions are complete, type **final** to receive your final assessment.
+        4. Once all preset questions are complete, you will receive your final assessment.
         """
     )
     
