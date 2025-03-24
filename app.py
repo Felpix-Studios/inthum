@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import streamlit as st
 from openai import OpenAI
+import time
 
 key = st.secrets["OPENAI_API_KEY"]
 
@@ -84,7 +85,7 @@ def display_chat():
 # -- Streamlit App --
 
 def main():
-    st.title("AI Chat & Assessment App")
+    st.title("Intellectual Humility AI Assessment")
     st.write(
         """
         This app will ask you a series of introspective questions via a chat interface.
@@ -188,24 +189,18 @@ def main():
                     # All preset questions answered.
                     st.session_state.chat_history.append({
                         "role": "assistant",
-                        "content": "All preset questions have been answered! Type **final** to receive your final assessment."
+                        "content": "All preset questions have been answered! Your final assessment is being created..."
                     })
                     st.session_state.phase = "final"
 
         # --- PHASE 3: FINAL ASSESSMENT ---
         elif st.session_state.phase == "final":
-            st.session_state.chat_history.append({"role": "user", "content": user_input})
-            if user_input.strip().lower() == "final":
-                with st.spinner("Calculating your assessment..."):
-                    final_assessment = get_final_score(st.session_state.responses)
-                st.session_state.chat_history.append({
+          time.sleep(1)
+          with st.spinner("Calculating your assessment..."):
+              final_assessment = get_final_score(st.session_state.responses)
+              st.session_state.chat_history.append({
                     "role": "assistant",
                     "content": "## Final Assessment\n" + final_assessment
-                })
-            else:
-                st.session_state.chat_history.append({
-                    "role": "assistant",
-                    "content": "Please type **final** to receive your final assessment."
                 })
     
     # Finally, display the updated chat history.
