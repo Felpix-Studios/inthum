@@ -1,12 +1,12 @@
 import os
+import time
 from dotenv import load_dotenv
 import streamlit as st
 from openai import OpenAI
-import time
 
-key = st.secrets["OPENAI_API_KEY"]
-
-client = OpenAI(api_key=key)
+# Load environment variables from .env file
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # -- Preset Questions --
 QUESTIONS = [
@@ -23,7 +23,6 @@ def get_assistant_follow_up(preset_question, user_response):
     prompt = (
         f"The user was asked: \"{preset_question}\"\n"
         f"And responded: \"{user_response}\"\n\n"
-        "You are an expert psycologist analyzing the user's response for their potential of intellectual humulity"
         "Please provide exactly 2 or 3 short follow-up questions (each on its own line) with no extra formatting, "
         "no numbering, no bullet points, and no styling. Then on a separate line, provide one final scale question "
         "from 1 to 5 about how strongly the user agrees with a relevant statement. "
@@ -41,17 +40,9 @@ def get_assistant_follow_up(preset_question, user_response):
     return response.choices[0].message.content
 
 def get_final_score(responses):
-
     prompt = (
-        "You are an expert psychologist. Your task is to interpret how the user's answers and responses reflect thier intellectual"
-        "humility. Use the following definition of intellectual humility: Intellectual humility is the "
-        "recognition that our knowledge and understanding are always limited and subject to growth or change." 
-        "It involves acknowledging that we can be wrong, while staying open to learning from new information or perspectives."
-        "Individuals who exhibit intellectual humility demonstrate curiosity, actively seeking out opposing viewpoints to refine their own thinking."
-        "They also tend to be self-reflective about their cognitive biases and willing to correct mistakes in pursuit of truth."
-        "In essence, intellectual humility emphasizes understanding over ego, valuing the collaborative search for accuracy above the need to be right."
-        "Evaluate the following user responses to the questions and their follow-ups, "
-        "and provide a final score on a scale from 1 (low intellectual humility) to 10 (high intellectual humility) along with a short explanation for the score.\n\n"
+        "You are an expert psychologist. Evaluate the following user responses to the questions and their follow-ups, "
+        "and provide a final score on a scale from 1 (low) to 10 (high) along with a brief explanation for the score.\n\n"
         "User responses:\n\n"
     )
     for idx, resp in enumerate(responses, start=1):
@@ -73,19 +64,14 @@ def get_final_score(responses):
     return response.choices[0].message.content
 
 def display_chat():
-    """
-    Displays the chat history using st.chat_message.
-    """
     for msg in st.session_state.chat_history:
         if msg["role"] == "assistant":
             st.chat_message("assistant").write(msg["content"])
         else:
             st.chat_message("user").write(msg["content"])
 
-# -- Streamlit App --
-
 def main():
-    st.title("Intellectual Humility AI Assessment")
+    st.title("AI Chat & Assessment App")
     st.write(
         """
         This app will ask you a series of introspective questions via a chat interface.
@@ -93,8 +79,8 @@ def main():
         **Flow**:
         1. You’ll first answer a preset question.
         2. The AI will generate a queue of follow-up questions (including the final scale question).
-        3. You answer each follow-up one by one (each appears in its own message).
-        4. Once all preset questions are complete, you will receive your final assessment.
+        3. You answer each follow-up one by one.
+        4. Once all preset questions are complete, the final assessment is automatically generated after a 1 second pause.
         """
     )
     
@@ -102,19 +88,21 @@ def main():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     if "current_question_index" not in st.session_state:
-        st.session_state.current_question_index = 0  # Index for preset questions
+        st.session_state.current_question_index = 0
     if "phase" not in st.session_state:
-        st.session_state.phase = "preset"  # can be "preset", "follow_up", or "final"
+        st.session_state.phase = "preset"  # "preset", "follow_up", or "final"
     if "responses" not in st.session_state:
-        st.session_state.responses = []  # Store answers for each preset question
+        st.session_state.responses = []
     if "current_response" not in st.session_state:
-        st.session_state.current_response = {}  # Temporary storage for the current question
+        st.session_state.current_response = {}
     if "follow_up_queue" not in st.session_state:
         st.session_state.follow_up_queue = []
     if "follow_up_index" not in st.session_state:
         st.session_state.follow_up_index = 0
     if "follow_up_answers" not in st.session_state:
         st.session_state.follow_up_answers = []
+    if "final_generated" not in st.session_state:
+        st.session_state.final_generated = False
 
     # On initial load, send the first preset question if the chat is empty.
     if not st.session_state.chat_history and st.session_state.current_question_index < len(QUESTIONS):
@@ -123,87 +111,67 @@ def main():
     
     user_input = st.chat_input("Your message:")
     if user_input:
-        # --- PHASE 1: PRESET ANSWER ---
         if st.session_state.phase == "preset":
-            # User has answered the preset question.
             st.session_state.chat_history.append({"role": "user", "content": user_input})
-            
-            # Store the user's preset answer.
             st.session_state.current_response["preset_answer"] = user_input
             st.session_state.current_response["question"] = QUESTIONS[st.session_state.current_question_index]
             
-            # Append a temporary assistant message showing the spinner/loading text.
+            # Insert a temporary spinner message in-line.
             spinner_index = len(st.session_state.chat_history)
             st.session_state.chat_history.append({"role": "assistant", "content": "Generating follow-up questions..."})
             
-            # Generate the follow-up text.
             follow_up_text = get_assistant_follow_up(
                 QUESTIONS[st.session_state.current_question_index],
                 user_input
             )
-            
-            # Split the follow-up content into individual lines.
             lines = [line.strip() for line in follow_up_text.split("\n") if line.strip()]
             st.session_state.follow_up_queue = lines
             st.session_state.follow_up_index = 0
             st.session_state.follow_up_answers = []
             
-            # Replace the spinner message with the first follow-up question, if available.
             if lines:
                 st.session_state.chat_history[spinner_index]["content"] = lines[0]
                 st.session_state.follow_up_index = 1
             else:
                 st.session_state.chat_history[spinner_index]["content"] = "No follow-up questions received."
             
-            # Move to follow_up phase.
             st.session_state.phase = "follow_up"
-
-        # --- PHASE 2: FOLLOW-UP ANSWERS ---
+        
         elif st.session_state.phase == "follow_up":
-            # User is answering a follow-up question.
             st.session_state.chat_history.append({"role": "user", "content": user_input})
             st.session_state.follow_up_answers.append(user_input)
-            
-            # Check if there is another follow-up question.
             if st.session_state.follow_up_index < len(st.session_state.follow_up_queue):
                 next_question = st.session_state.follow_up_queue[st.session_state.follow_up_index]
                 st.session_state.chat_history.append({"role": "assistant", "content": next_question})
                 st.session_state.follow_up_index += 1
             else:
-                # All follow-up questions for this preset have been answered.
                 st.session_state.current_response["followup_answers"] = st.session_state.follow_up_answers
                 st.session_state.responses.append(st.session_state.current_response)
-                
-                # Reset for the next preset question.
                 st.session_state.current_response = {}
                 st.session_state.follow_up_queue = []
                 st.session_state.follow_up_index = 0
                 st.session_state.follow_up_answers = []
-                
                 st.session_state.current_question_index += 1
                 if st.session_state.current_question_index < len(QUESTIONS):
                     next_preset = QUESTIONS[st.session_state.current_question_index]
                     st.session_state.chat_history.append({"role": "assistant", "content": next_preset})
                     st.session_state.phase = "preset"
                 else:
-                    # All preset questions answered.
-                    st.session_state.chat_history.append({
-                        "role": "assistant",
-                        "content": "All preset questions have been answered! Your final assessment is being created..."
-                    })
                     st.session_state.phase = "final"
-
-        # --- PHASE 3: FINAL ASSESSMENT ---
-        elif st.session_state.phase == "final":
-          time.sleep(1)
-          with st.spinner("Calculating your assessment..."):
-              final_assessment = get_final_score(st.session_state.responses)
-              st.session_state.chat_history.append({
-                    "role": "assistant",
-                    "content": "## Final Assessment\n" + final_assessment
-                })
+        
+        # Final assessment will be generated automatically once phase is "final"
     
-    # Finally, display the updated chat history.
+    # When phase is final and the final assessment hasn't been generated yet,
+    # wait 1 second, generate the assessment, and mark it as generated.
+    if st.session_state.phase == "final" and not st.session_state.final_generated:
+        time.sleep(1)
+        final_assessment = get_final_score(st.session_state.responses)
+        st.session_state.chat_history.append({
+            "role": "assistant",
+            "content": "## Final Assessment\n" + final_assessment
+        })
+        st.session_state.final_generated = True
+
     display_chat()
 
 if __name__ == "__main__":
