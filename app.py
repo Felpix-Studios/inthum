@@ -164,7 +164,7 @@ def main():
     # When phase is final and the final assessment hasn't been generated yet,
     # wait 1 second, generate the assessment, and mark it as generated.
     if st.session_state.phase == "final" and not st.session_state.final_generated:
-        time.sleep(1)
+        time.sleep(0.5)
         final_assessment = get_final_score(st.session_state.responses)
         st.session_state.chat_history.append({
             "role": "assistant",
