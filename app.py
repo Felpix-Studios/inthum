@@ -83,7 +83,10 @@ def display_chat():
   
 # Main Streamlit Application
 def main():
+    logo_path = "plab_logo.png"
+    st.logo(logo_path, size = "large")
     st.title("Intellectual Humility Chat Assessment")
+    st.image(logo_path, width = 520)
     st.write(
         """
         This app will ask you a series of introspective questions via a chat interface.
@@ -103,7 +106,7 @@ def main():
     if "current_question_index" not in st.session_state:
         st.session_state.current_question_index = 0
     if "phase" not in st.session_state:
-        st.session_state.phase = "preset"  # "preset", "follow_up", or "final"
+        st.session_state.phase = "preset"
     if "responses" not in st.session_state:
         st.session_state.responses = []
     if "current_response" not in st.session_state:
@@ -117,7 +120,6 @@ def main():
     if "final_generated" not in st.session_state:
         st.session_state.final_generated = False
 
-    # On initial load, send the first preset question if the chat is empty.
     if not st.session_state.chat_history and st.session_state.current_question_index < len(QUESTIONS):
         first_question = QUESTIONS[st.session_state.current_question_index]
         st.session_state.chat_history.append({"role": "assistant", "content": first_question})
