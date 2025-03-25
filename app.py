@@ -19,14 +19,16 @@ QUESTIONS = [
 # -- Helper Functions --
 
 # Function to generate follow-up questions based on user response to a preset question.
-def get_assistant_follow_up(preset_question, user_response):
+def get_assistant_follow_up(preset_question, user_response, chat_history):
     prompt = (
+        f"Previous conversation: \"{chat_history}\"\n"
         f"The user was asked: \"{preset_question}\"\n"
         f"And responded: \"{user_response}\"\n\n"
         "You are an expert psycologist analyzing the user's response for their potential of intellectual humulity"
-        "Please provide exactly 2 or 3 short follow-up questions (each on its own line) with no extra formatting, "
+        "Please provide exactly 2 short, and only 2 follow-up questions (each on its own line) with no extra formatting, "
         "no numbering, no bullet points, and no styling. Then on a separate line, provide one final scale question "
         "from 1 to 5 about how strongly the user agrees with a relevant statement. "
+        "Do not be repetitive or ask the same question in a different way, and ensure that the questions are relevant to the user's responses."
         "Return only the plain question text."
     )
     messages = [
@@ -89,6 +91,10 @@ def main():
     st.image(logo_path, width = 520)
     st.write(
         """
+        Do you have an intellectually humble mindset?  Use this tool to find out.
+
+        
+      
         This app will ask you a series of introspective questions via a chat interface.
         
         **Flow**:
@@ -137,7 +143,8 @@ def main():
             
             follow_up_text = get_assistant_follow_up(
                 QUESTIONS[st.session_state.current_question_index],
-                user_input
+                user_input,
+                st.session_state.chat_history
             )
             lines = [line.strip() for line in follow_up_text.split("\n") if line.strip()]
             st.session_state.follow_up_queue = lines
@@ -181,6 +188,7 @@ def main():
     if st.session_state.phase == "final" and not st.session_state.final_generated:
         time.sleep(0.5)
         final_assessment = get_final_score(st.session_state.responses)
+        print(st.session_state.chat_history)
         st.session_state.chat_history.append({
             "role": "assistant",
             "content": "## Final Assessment\n" + final_assessment
