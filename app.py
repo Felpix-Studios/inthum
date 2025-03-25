@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import streamlit as st
 from openai import OpenAI
 
-# Load environment variables from .env file
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -19,10 +18,12 @@ QUESTIONS = [
 
 # -- Helper Functions --
 
+# Function to generate follow-up questions based on user response to a preset question.
 def get_assistant_follow_up(preset_question, user_response):
     prompt = (
         f"The user was asked: \"{preset_question}\"\n"
         f"And responded: \"{user_response}\"\n\n"
+        "You are an expert psycologist analyzing the user's response for their potential of intellectual humulity"
         "Please provide exactly 2 or 3 short follow-up questions (each on its own line) with no extra formatting, "
         "no numbering, no bullet points, and no styling. Then on a separate line, provide one final scale question "
         "from 1 to 5 about how strongly the user agrees with a relevant statement. "
@@ -39,10 +40,19 @@ def get_assistant_follow_up(preset_question, user_response):
     )
     return response.choices[0].message.content
 
+
+# Function to generate the final assessment, prompt based on Volfovsky's repo
 def get_final_score(responses):
     prompt = (
-        "You are an expert psychologist. Evaluate the following user responses to the questions and their follow-ups, "
-        "and provide a final score on a scale from 1 (low) to 10 (high) along with a brief explanation for the score. If the user is clearly not making an effort, your final score should be 1. In your final assessment, make sure to address the user with second-person pronouns.\n\n"
+        "You are an expert psychologist. Your task is to interpret how the user's answers and responses reflect thier intellectual"
+        "humility. Use the following definition of intellectual humility: Intellectual humility is the "
+        "recognition that our knowledge and understanding are always limited and subject to growth or change." 
+        "It involves acknowledging that we can be wrong, while staying open to learning from new information or perspectives."
+        "Individuals who exhibit intellectual humility demonstrate curiosity, actively seeking out opposing viewpoints to refine their own thinking."
+        "They also tend to be self-reflective about their cognitive biases and willing to correct mistakes in pursuit of truth."
+        "In essence, intellectual humility emphasizes understanding over ego, valuing the collaborative search for accuracy above the need to be right."
+        "Evaluate the following user responses to the questions and their follow-ups, "
+        "and provide a final score on a scale from 1 (low intellectual humility) to 10 (high intellectual humility) along with a short explanation for the score.\n\n"
         "User responses:\n\n"
     )
     for idx, resp in enumerate(responses, start=1):
@@ -70,6 +80,8 @@ def display_chat():
         else:
             st.chat_message("user").write(msg["content"])
 
+  
+# Main Streamlit Application
 def main():
     st.title("AI Chat & Assessment App")
     st.write(
@@ -84,7 +96,6 @@ def main():
         """
     )
     
-    # Initialize session state variables if they don't exist.
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     if "current_question_index" not in st.session_state:
