@@ -83,7 +83,7 @@ def display_chat():
   
 # Main Streamlit Application
 def main():
-    st.title("AI Chat & Assessment App")
+    st.title("Intellectual Humility Chat Assessment")
     st.write(
         """
         This app will ask you a series of introspective questions via a chat interface.
@@ -93,6 +93,8 @@ def main():
         2. The AI will generate a queue of follow-up questions (including the final scale question).
         3. You answer each follow-up one by one.
         4. Once all preset questions are complete, the final assessment is automatically generated after a 1 second pause.
+
+        This app is currently experimental and uses generative AI! Please provide feedback and report any issues.
         """
     )
     
