@@ -43,7 +43,7 @@ def get_assistant_follow_up(preset_question, user_response, chat_history):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        temperature=0.9
+        temperature=0.5
     )
     return response.choices[0].message.content
 
@@ -96,19 +96,27 @@ def main():
     st.image(logo_path, width = 520)
     st.write(
         """
+        ### How Intellectually Humble Are You?
         Do you have an intellectually humble mindset?  Use this tool to find out.
 
-
-      
-        This app will ask you a series of introspective questions via a chat interface.
-        
-        **Flow**:
-        1. You’ll first answer a preset question.
-        2. The AI will generate a queue of follow-up questions (including the final scale question).
-        3. You answer each follow-up one by one.
-        4. Once all preset questions are complete, the final assessment is automatically generated after a 1 second pause.
+        Take this quiz to get your intellectual humility score! This app will ask you a series of questions to generate your intellectual humility score. 
 
         This app is currently experimental and uses generative AI! Please provide feedback and report any issues.
+
+
+
+        What is intellectual humility?
+        - Being open to new ideas.
+        - Being willing to reconsider your beliefs when presented with new information or perspectives.
+        - Recognizing that you might not always have all the answers.
+        - Acknowledging that your knowledge and understanding can have limitations.
+        - Challenging your assumptions, biases, and level of certainty about something or someone
+
+        Why should I care about intellectual humility? 
+        - Researchers have found that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) is associated with positive traits like openness to new ideas and political views, greater scrutiny of misinformation, prosocial values, and empathy.
+        - Understanding and improving our own intellectual humility is a critical step in understanding political polarization and misinformation.
+
+
         """
     )
     
