@@ -9,11 +9,14 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # -- Preset Questions --
 QUESTIONS = [
-    "Can you describe a time you realized you were wrong about something important? How did you come to that realization, and what did you do afterward?",
-    "What’s a topic you used to feel very certain about, but now feel less certain—or even uncertain—about? What made you reconsider?",
-    "When you’re in a debate and you encounter evidence that contradicts your view, how do you usually respond?",
-    "In areas you’re most knowledgeable about, do you ever worry that you might still have blind spots? How do you watch out for them?",
-    "How do you decide which sources of information you trust and which you don’t?"
+    #"Can you describe a time you realized you were wrong about something important? How did you come to that realization, and what did you do afterward?",
+    #"What’s a topic you used to feel very certain about, but now feel less certain—or even uncertain—about? What made you reconsider?",
+    #"When you’re in a debate and you encounter evidence that contradicts your view, how do you usually respond?",
+    #"In areas you’re most knowledgeable about, do you ever worry that you might still have blind spots? How do you watch out for them?",
+    #"How do you decide which sources of information you trust and which you don’t?"
+    "What are your primary sources of information when you are trying to learn about new issue or event?",
+    "How do you decide which perspectives are worth engaging with or considering on social media?"
+    "How do you typically react when someone challenges your beliefs or opinions on social media?"
 ]
 
 # -- Helper Functions --
@@ -25,9 +28,11 @@ def get_assistant_follow_up(preset_question, user_response, chat_history):
         f"The user was asked: \"{preset_question}\"\n"
         f"And responded: \"{user_response}\"\n\n"
         "You are an expert psycologist analyzing the user's response for their potential of intellectual humulity"
-        "Please provide exactly 2 short, and only 2 follow-up questions (each on its own line) with no extra formatting, "
+        "Please provide exactly 1 short, and only 1 follow-up questions (each on its own line) with no extra formatting, "
         "no numbering, no bullet points, and no styling. Then on a separate line, provide one final scale question "
         "from 1 to 5 about how strongly the user agrees with a relevant statement. "
+        "Your questions should be open-ended and designed to elicit more information about the user's thought process without any bias or leading language."
+        "You should also not try to have 2 follow-up questions or combine several questions into one. Only send one follow-up question."
         "Do not be repetitive or ask the same question in a different way, and ensure that the questions are relevant to the user's responses."
         "Return only the plain question text."
     )
@@ -54,7 +59,7 @@ def get_final_score(responses):
         "They also tend to be self-reflective about their cognitive biases and willing to correct mistakes in pursuit of truth."
         "In essence, intellectual humility emphasizes understanding over ego, valuing the collaborative search for accuracy above the need to be right."
         "Evaluate the following user responses to the questions and their follow-ups, "
-        "and provide a final score on a scale from 1 (low intellectual humility) to 10 (high intellectual humility) along with a short explanation for the score.\n\n"
+        "and provide a final score on a scale from 1 (low intellectual humility) to 10 (high intellectual humility) along with a short explanation for the score. If a user makes no attempt to answer the question, you may assign them a score of 1 with a short explanation.\n\n"
         "User responses:\n\n"
     )
     for idx, resp in enumerate(responses, start=1):
@@ -93,7 +98,7 @@ def main():
         """
         Do you have an intellectually humble mindset?  Use this tool to find out.
 
-        
+
       
         This app will ask you a series of introspective questions via a chat interface.
         
@@ -193,6 +198,8 @@ def main():
             "role": "assistant",
             "content": "## Final Assessment\n" + final_assessment
         })
+
+        api.push(chat_history=st.session_state.chat_history)
         st.session_state.final_generated = True
 
     display_chat()
