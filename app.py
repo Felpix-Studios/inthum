@@ -106,10 +106,10 @@ def main():
 
 
         What is intellectual humility?
-        - Being open to new ideas.
-        - Being willing to reconsider your beliefs when presented with new information or perspectives.
-        - Recognizing that you might not always have all the answers.
-        - Acknowledging that your knowledge and understanding can have limitations.
+        - Being open to new ideas
+        - Being willing to reconsider your beliefs when presented with new information or perspectives
+        - Recognizing that you might not always have all the answers
+        - Acknowledging that your knowledge and understanding can have limitations
         - Challenging your assumptions, biases, and level of certainty about something or someone
 
         Why should I care about intellectual humility? 
