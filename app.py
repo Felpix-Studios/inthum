@@ -7,7 +7,7 @@ from openai import OpenAI
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# -- Preset Questions --
+# -- Open-ended Questions --
 QUESTIONS = [
     #"Can you describe a time you realized you were wrong about something important? How did you come to that realization, and what did you do afterward?",
     #"What’s a topic you used to feel very certain about, but now feel less certain—or even uncertain—about? What made you reconsider?",
@@ -76,7 +76,7 @@ def get_assistant_follow_up(preset_question, user_response, chat_history):
     )
     return response.choices[0].message.content
 
-# Function to generate the final assessment based on user responses.
+# Function to generate the final assessment based on user responses. Prompt may need adjusting (should the scale questions be numerically calculated?)
 def get_final_score(responses):
     prompt = (
         "You are an expert psychologist. Your task is to interpret how the user's answers and responses reflect their intellectual "
@@ -92,7 +92,6 @@ def get_final_score(responses):
     )
     for idx, resp in enumerate(responses, start=1):
         prompt += f"Question {idx}:\n"
-        # For preset questions, use preset_answer and followup_answers; for easy questions, use question and answer.
         if 'preset_answer' in resp:
             prompt += f"Preset Answer: {resp.get('preset_answer', '')}\n"
             if 'followup_answers' in resp:
@@ -120,9 +119,9 @@ def display_chat():
         else:
             st.chat_message("user").write(msg["content"])
 
-# -- Main Streamlit Application --
+# -- Streamlit Application --
 def main():
-    logo_path = "plab_logo.png"
+    logo_path = "new_plab_logo.png"
     st.logo(logo_path, size="large")
     st.title("Intellectual Humility Chat Assessment")
     st.image(logo_path, width=520)
@@ -166,11 +165,10 @@ def main():
     if "final_generated" not in st.session_state:
         st.session_state.final_generated = False
 
-    # New session state variable to control which question set is active: "easy" or "preset"
+    # New session state variable to control which question set is active: "easy" or "open-ended"
     if "question_style" not in st.session_state:
-        st.session_state.question_style = "easy"  # Easy questions come first
+        st.session_state.question_style = "easy"
 
-    # Initialize indices for easy questions if needed.
     if st.session_state.question_style == "easy":
         if "current_easy_group_index" not in st.session_state:
             st.session_state.current_easy_group_index = 0
@@ -289,6 +287,9 @@ def main():
             "role": "assistant",
             "content": "## Final Assessment\n" + final_assessment
         })
+
+        # Save final assessment + responses to external API/source?
+
         st.session_state.final_generated = True
 
     display_chat()
