@@ -70,7 +70,7 @@ def get_assistant_follow_up(preset_question, user_response, chat_history):
         {"role": "user", "content": prompt}
     ]
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-2024-08-06",
         messages=messages,
         temperature=0.5
     )
@@ -106,7 +106,7 @@ def get_final_score(responses):
         {"role": "user", "content": prompt}
     ]
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-2024-08-06",
         messages=messages,
         temperature=0.9
     )
