@@ -7,7 +7,7 @@ import streamlit as st
 # load_dotenv()
 # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# -- Preset Questions --
+# -- Open-ended Questions --
 QUESTIONS = [
     #"Can you describe a time you realized you were wrong about something important? How did you come to that realization, and what did you do afterward?",
     #"What’s a topic you used to feel very certain about, but now feel less certain—or even uncertain—about? What made you reconsider?",
@@ -25,6 +25,35 @@ QUESTIONS = [
     "I like finding out new information that differs from what I already think is true",
 ]
 [
+]
+
+# -- Easy Questions --
+EASY_QUESTIONS = [
+    {
+        "type": "describe",
+        "instruction": "How well do the following describe you? (Scale: Very well, Fairly well, Slightly well, Not well at all)",
+        "scale": ["Very well", "Fairly well", "Slightly well", "Not well at all"],
+        "questions": [
+            "I recognize and appreciate the expertise of others in areas where I lack knowledge.",
+            "I find it difficult to express my opinion if I think others won’t agree with what I say.",
+            "When others disagree with my ideas, I feel like I'm being personally attacked.",
+            #"I believe changing my mind would be a sign of weakness.",
+            #"Even when I disagree with others, I can recognize when they have sound points.",
+            #"I try to avoid engaging with people I think I’ll disagree with."
+        ]
+    },
+    {
+        "type": "frequency",
+        "instruction": "How often do you do each of the following? (Scale: Often, Sometimes, Rarely, Never)",
+        "scale": ["Often", "Sometimes", "Rarely", "Never"],
+        "questions": [
+            "Seek out perspectives that differ from my own.",
+            "Approach someone with whom I disagree with curiosity.",
+            #"Quickly dismiss viewpoints that differ from my own if I come across them online.",
+            #"Hear others out, even if I disagree with them.",
+            #"Reflect on whether my online sources and beliefs may be biased or incomplete."
+        ]
+    }
 ]
 
 # -- Helper Functions --
@@ -95,39 +124,35 @@ def display_chat():
         else:
             st.chat_message("user").write(msg["content"])
 
-  
-# Main Streamlit Application
+# -- Streamlit Application --
 def main():
     logo_path = "new_plab_logo.png"
     st.logo(logo_path, size = "large")
     st.title("Intellectual Humility Chat Assessment")
-    st.image(logo_path, width = 520)
+    st.image(logo_path, width=520)
     st.write(
         """
         ### How Intellectually Humble Are You?
-        Do you have an intellectually humble mindset?  Use this tool to find out.
+        Do you have an intellectually humble mindset? Use this tool to find out.
 
         Take this quiz to get your intellectual humility score! This app will ask you a series of questions to generate your intellectual humility score. Please rate how much you agree with each statement on a scale from 1 (strongly disagree) to 5 (strongly agree).
 
         This app is currently experimental and uses generative AI! Please provide feedback and report any issues.
 
-
-
-        What is intellectual humility?
-        - Being open to new ideas.
-        - Being willing to reconsider your beliefs when presented with new information or perspectives.
-        - Recognizing that you might not always have all the answers.
-        - Acknowledging that your knowledge and understanding can have limitations.
+        **What is intellectual humility?**
+        - Being open to new ideas
+        - Being willing to reconsider your beliefs when presented with new information or perspectives
+        - Recognizing that you might not always have all the answers
+        - Acknowledging that your knowledge and understanding can have limitations
         - Challenging your assumptions, biases, and level of certainty about something or someone
 
-        Why should I care about intellectual humility? 
+        **Why should I care about intellectual humility?** 
         - Researchers have found that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) is associated with positive traits like openness to new ideas and political views, greater scrutiny of misinformation, prosocial values, and empathy.
         - Understanding and improving our own intellectual humility is a critical step in understanding political polarization and misinformation.
-
-
         """
     )
     
+    # -- Session State Initialization --
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     if "current_question_index" not in st.session_state:
