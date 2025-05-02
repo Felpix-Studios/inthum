@@ -24,8 +24,6 @@ QUESTIONS = [
     "In the face of conflicting evidence, I am open to changing my opinions.",
     "I like finding out new information that differs from what I already think is true",
 ]
-[
-]
 
 # -- Helper Functions --
 
