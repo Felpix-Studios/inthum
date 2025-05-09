@@ -194,7 +194,6 @@ def main():
         st.markdown("### Questions")
         response_dict = {}
 
-        # Define Likert scale options
         likert_options = {
             1: "Strongly Disagree",
             2: "Disagree", 
@@ -206,12 +205,8 @@ def main():
         for i, question in enumerate(QUESTIONS):
             st.markdown(f"**Q{i + 1}. {question}**")
 
-            # Create containers with better spacing and alignment
             container = st.container()
 
-
-
-            
 
             left,center_col,right = container.columns([1.5, 10, 1])
             with center_col:
@@ -224,11 +219,6 @@ def main():
                 key=f"radio{i}",
               )
 
-            
-
-            
-
-            # Update the selected label to be bold
             label_update_cols = container.columns(5)
             for j, (col, label) in enumerate(zip(label_update_cols, ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"])):
                 with col:
@@ -237,7 +227,6 @@ def main():
                     else:
                         st.markdown(f"<div style='text-align: center; font-size: 0.8em; color: #666;'>{label}</div>", unsafe_allow_html=True)
 
-            # Add some spacing
             st.write("")
 
 
@@ -245,7 +234,6 @@ def main():
 
             response_dict[question] = selected_value
 
-        # Create a styled submit button
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             submit_clicked = st.button("Submit All Answers", use_container_width=True, key="submit_all")
@@ -254,7 +242,6 @@ def main():
                 if missing:
                   st.error("Please answer all questions before submitting.")
                 else:
-                    # Append responses to session state
                     for q, ans in response_dict.items():
                         st.session_state.responses.append({
                             "question": q,
@@ -288,7 +275,6 @@ def main():
         x_vals_cut = np.linspace(13, 30, 500)
         y_vals_cut = norm.pdf(x_vals_cut, loc=mean_score, scale=std_dev)
 
-        # Create the plot
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
@@ -330,12 +316,10 @@ def main():
         )
         st.plotly_chart(fig, use_container_width=True)
         
-        # Add Reset Test button
         if st.button("Reset Test"):
             reset_test()
             st.rerun()
     else:
-        # Show final assessment again with reset button
         scores = [resp["scale_answer"] for resp in st.session_state.responses]
         total_score = sum(scores)
         
@@ -355,7 +339,6 @@ def main():
         x_vals_cut = np.linspace(13, 30, 500)
         y_vals_cut = norm.pdf(x_vals_cut, loc=mean_score, scale=std_dev)
 
-        # Create the plot
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
