@@ -1,6 +1,9 @@
 import os
 import time
-from dotenv import load_dotenv
+import plotly.graph_objects as go
+import numpy as np
+from scipy.stats import norm
+#from dotenv import load_dotenv
 import streamlit as st
 # from openai import OpenAI
 
@@ -10,10 +13,10 @@ import streamlit as st
 # -- Open-ended Questions --
 QUESTIONS = [
     #"Can you describe a time you realized you were wrong about something important? How did you come to that realization, and what did you do afterward?",
-    #"What’s a topic you used to feel very certain about, but now feel less certain—or even uncertain—about? What made you reconsider?",
-    #"When you’re in a debate and you encounter evidence that contradicts your view, how do you usually respond?",
-    #"In areas you’re most knowledgeable about, do you ever worry that you might still have blind spots? How do you watch out for them?",
-    #"How do you decide which sources of information you trust and which you don’t?"
+    #"What's a topic you used to feel very certain about, but now feel less certain—or even uncertain—about? What made you reconsider?",
+    #"When you're in a debate and you encounter evidence that contradicts your view, how do you usually respond?",
+    #"In areas you're most knowledgeable about, do you ever worry that you might still have blind spots? How do you watch out for them?",
+    #"How do you decide which sources of information you trust and which you don't?"
     # "What are your primary sources of information when you are trying to learn about new issue or event?",
     # "How do you decide which perspectives are worth engaging with or considering on social media?"
     # "How do you typically react when someone challenges your beliefs or opinions on social media?"
@@ -35,11 +38,11 @@ EASY_QUESTIONS = [
         "scale": ["Very well", "Fairly well", "Slightly well", "Not well at all"],
         "questions": [
             "I recognize and appreciate the expertise of others in areas where I lack knowledge.",
-            "I find it difficult to express my opinion if I think others won’t agree with what I say.",
+            "I find it difficult to express my opinion if I think others won't agree with what I say.",
             "When others disagree with my ideas, I feel like I'm being personally attacked.",
             #"I believe changing my mind would be a sign of weakness.",
             #"Even when I disagree with others, I can recognize when they have sound points.",
-            #"I try to avoid engaging with people I think I’ll disagree with."
+            #"I try to avoid engaging with people I think I'll disagree with."
         ]
     },
     {
@@ -124,8 +127,34 @@ def display_chat():
         else:
             st.chat_message("user").write(msg["content"])
 
+def reset_test():
+    for key in ['chat_history', 'responses', 'submitted_all', 'final_generated']:
+        if key in st.session_state:
+            st.session_state[key] = []
+    st.session_state.submitted_all = False
+    st.session_state.final_generated = False
+
 # -- Streamlit Application --
 def main():
+    st.markdown("""
+      <style>
+      /* Target the radio group container */
+      div[role="radiogroup"] {
+          display: flex;
+          justify-content: space-between;
+          gap: 15%; /* Adjust this for spacing between buttons */
+          width: 100%;
+          padding: 0px 0px;
+      }
+
+      /* Center and evenly space radio button labels */
+      div[role="radiogroup"] > label {
+          flex: 1;
+          text-align: center;
+      }
+      </style>
+    """, unsafe_allow_html=True)
+
     logo_path = "new_plab_logo.png"
     st.logo(logo_path, size = "large")
     st.title("Intellectual Humility Chat Assessment")
@@ -155,68 +184,226 @@ def main():
     # -- Session State Initialization --
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
-    if "current_question_index" not in st.session_state:
-        st.session_state.current_question_index = 0
-    # if "phase" not in st.session_state:
-    #     st.session_state.phase = "preset"
     if "responses" not in st.session_state:
         st.session_state.responses = []
-    # if "current_response" not in st.session_state:
-    #     st.session_state.current_response = {}
-    # if "follow_up_queue" not in st.session_state:
-    #     st.session_state.follow_up_queue = []
-    # if "follow_up_index" not in st.session_state:
-    #     st.session_state.follow_up_index = 0
-    # if "follow_up_answers" not in st.session_state:
-    #     st.session_state.follow_up_answers = []
+    if "submitted_all" not in st.session_state:
+        st.session_state.submitted_all = False
     if "final_generated" not in st.session_state:
         st.session_state.final_generated = False
-    if st.session_state.current_question_index < len(QUESTIONS):
-        q_index = st.session_state.current_question_index
-        question_text = QUESTIONS[q_index]
-        
-        st.markdown(f"**Q{q_index + 1}. {question_text}**")
-        
-        # Display radio buttons directly under the question
-        rating = st.slider(
-            "Select your response (1 = strongly disagree, 5 = strongly agree):",
-            min_value=1,
-            max_value=5,
-            step=1,
-            value=3,  # default midpoint selection
-            key=f"rating_{q_index}"
-        )
 
-        if st.button("Submit", key=f"submit_{q_index}"):
-            st.session_state.responses.append({
-                "question": question_text,
-                "scale_answer": int(rating)
-            })
-            st.session_state.current_question_index += 1
-            st.rerun()  # Refresh to load the next question
+    # -- Show all questions at once --
+    if not st.session_state.submitted_all:
+        st.markdown("### Questions")
+        response_dict = {}
+
+        # Define Likert scale options
+        likert_options = {
+            1: "Strongly Disagree",
+            2: "Disagree", 
+            3: "Neither Agree nor Disagree",
+            4: "Agree",
+            5: "Strongly Agree"
+        }
+
+        for i, question in enumerate(QUESTIONS):
+            st.markdown(f"**Q{i + 1}. {question}**")
+
+            # Create containers with better spacing and alignment
+            container = st.container()
+
+
+
+            
+
+            left,center_col,right = container.columns([1.5, 10, 1])
+            with center_col:
+              selected_value = st.radio(
+                label="",
+                options=[1, 2, 3, 4, 5],
+                index = None,
+                format_func = lambda x: "",
+                horizontal=True,
+                key=f"radio{i}",
+              )
+
+            
+
+            
+
+            # Update the selected label to be bold
+            label_update_cols = container.columns(5)
+            for j, (col, label) in enumerate(zip(label_update_cols, ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"])):
+                with col:
+                    if j+1 == selected_value:
+                        st.markdown(f"<div style='text-align: center; font-size: 0.8em; font-weight: bold; color: #1E90FF;'>{label}</div>",     unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"<div style='text-align: center; font-size: 0.8em; color: #666;'>{label}</div>", unsafe_allow_html=True)
+
+            # Add some spacing
+            st.write("")
+
+
+            st.write("---")
+
+            response_dict[question] = selected_value
+
+        # Create a styled submit button
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            submit_clicked = st.button("Submit All Answers", use_container_width=True, key="submit_all")
+            if submit_clicked:
+                missing = [q for q, ans in response_dict.items() if ans is None]
+                if missing:
+                  st.error("Please answer all questions before submitting.")
+                else:
+                    # Append responses to session state
+                    for q, ans in response_dict.items():
+                        st.session_state.responses.append({
+                            "question": q,
+                            "scale_answer": int(ans)
+                        })
+                    st.session_state.submitted_all = True
+                    st.rerun()
+
+
 
     # --- Final assessment ---
-    else:
+    elif not st.session_state.final_generated:
         st.write("✅ All questions answered! Generating your final score...")
-        if not st.session_state.final_generated:
-            scores = [resp["scale_answer"] for resp in st.session_state.responses]
-            total_score = sum(scores)
-            average_score = round(total_score / len(scores), 2)
-            
-            st.session_state.final_generated = True
-            st.markdown("## Final Assessment")
-            st.write(f"**Total Score:** {total_score} out of {5 * len(scores)}")
+        scores = [resp["scale_answer"] for resp in st.session_state.responses]
+        total_score = sum(scores)
+        average_score = round(total_score / len(scores), 2)
 
-            st.markdown("""
-                #### How does your score compare to the average person?
-                """)
+        st.session_state.final_generated = True
+        st.markdown("## Final Assessment")
+        st.write(f"**Total Score:** {total_score} out of {5 * len(scores)}")
 
-            if total_score >= 25:
-                st.success("Your score places you in the **top 25%** for intellectual humility. 💡")
-            elif total_score <= 20:
-                st.error("Your score is in the **bottom 25%**, suggesting low intellectual humility.")
-            else:
-                st.info("Your score is in the **middle range**. You may be intellectually humble in some situations more than others.")
+        st.markdown("#### How does your score compare to the average person?")
+        if total_score >= 25:
+            st.success("Your score places you in the **top 25%** for intellectual humility. 💡")
+        elif total_score <= 20:
+            st.error("Your score is in the **bottom 25%**, suggesting low intellectual humility.")
+        else:
+            st.info("Your score is in the **middle range**. You may be intellectually humble in some situations more than others.")
+        mean_score = 22.64
+        std_dev = 3.98
+        x_vals_cut = np.linspace(13, 30, 500)
+        y_vals_cut = norm.pdf(x_vals_cut, loc=mean_score, scale=std_dev)
+
+        # Create the plot
+        fig = go.Figure()
+
+        fig.add_trace(go.Scatter(
+            x=x_vals_cut,
+            y=y_vals_cut,
+            mode='lines',
+            line=dict(color='skyblue'),
+            fill='tozeroy',
+            name='Density',
+            hoverinfo='skip'
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=[mean_score, mean_score],
+            y=[0, norm.pdf(mean_score, loc=mean_score, scale=std_dev)],
+            mode='lines',
+            line=dict(color='red', dash='dash'),
+            name='Mean = 22.64',
+            hoverinfo='skip'
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=[total_score, total_score],
+            y=[0, norm.pdf(total_score, loc=mean_score, scale=std_dev)],
+            mode='lines',
+            line=dict(color='green', dash='dot'),
+            name=f'Your Score = {total_score}',
+            hoverinfo='skip'
+        ))
+
+
+        fig.update_layout(
+            title='Estimated Density of Intellectual Humility Scores',
+            xaxis_title='Total Score (13–30)',
+            yaxis_title='Density',
+            xaxis=dict(range=[13, 30]),
+            template='simple_white',
+            showlegend=True
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Add Reset Test button
+        if st.button("Reset Test"):
+            reset_test()
+            st.rerun()
+    else:
+        # Show final assessment again with reset button
+        scores = [resp["scale_answer"] for resp in st.session_state.responses]
+        total_score = sum(scores)
+        
+        st.markdown("## Final Assessment")
+        st.write(f"**Total Score:** {total_score} out of {5 * len(scores)}")
+
+        st.markdown("#### How does your score compare to the average person?")
+        if total_score >= 25:
+            st.success("Your score places you in the **top 25%** for intellectual humility. 💡")
+        elif total_score <= 20:
+            st.error("Your score is in the **bottom 25%**, suggesting low intellectual humility.")
+        else:
+            st.info("Your score is in the **middle range**. You may be intellectually humble in some situations more than others.")
+        
+        mean_score = 22.64
+        std_dev = 3.98
+        x_vals_cut = np.linspace(13, 30, 500)
+        y_vals_cut = norm.pdf(x_vals_cut, loc=mean_score, scale=std_dev)
+
+        # Create the plot
+        fig = go.Figure()
+
+        fig.add_trace(go.Scatter(
+            x=x_vals_cut,
+            y=y_vals_cut,
+            mode='lines',
+            line=dict(color='skyblue'),
+            fill='tozeroy',
+            name='Density',
+            hoverinfo='skip'
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=[mean_score, mean_score],
+            y=[0, norm.pdf(mean_score, loc=mean_score, scale=std_dev)],
+            mode='lines',
+            line=dict(color='red', dash='dash'),
+            name='Mean = 22.64',
+            hoverinfo='skip'
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=[total_score, total_score],
+            y=[0, norm.pdf(total_score, loc=mean_score, scale=std_dev)],
+            mode='lines',
+            line=dict(color='green', dash='dot'),
+            name=f'Your Score = {total_score}',
+            hoverinfo='skip'
+        ))
+
+        fig.update_layout(
+            title='Estimated Density of Intellectual Humility Scores',
+            xaxis_title='Total Score (13–30)',
+            yaxis_title='Density',
+            xaxis=dict(range=[13, 30]),
+            template='simple_white',
+            showlegend=True
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Add Reset Test button
+        if st.button("Reset Test"):
+            reset_test()
+            st.rerun()
+
+    display_chat()
 
     # if not st.session_state.chat_history and st.session_state.current_question_index < len(QUESTIONS):
     #     first_question = QUESTIONS[st.session_state.current_question_index]
@@ -291,7 +478,6 @@ def main():
         # api.push(chat_history=st.session_state.chat_history)
         # st.session_state.final_generated = True
 
-    display_chat()
 
 if __name__ == "__main__":
     main()
