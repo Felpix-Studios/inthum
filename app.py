@@ -156,7 +156,7 @@ def main():
     logo_path = "new_plab_logo.png"
     st.logo(logo_path, size = "large")
     st.title("Intellectual Humility Chat Assessment")
-    st.image(logo_path, width=520)
+    st.image(logo_path, width=260)
     st.write(
         """
         ### Intellectual Humility Assessment 
