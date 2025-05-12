@@ -159,7 +159,6 @@ def main():
     st.image(logo_path, width=260)
     st.write(
         """
-        ### Intellectual Humility Assessment 
 
         Do you have an intellectually humble mindset? Use this tool to find out.
 
