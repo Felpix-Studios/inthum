@@ -159,12 +159,9 @@ def main():
     st.image(logo_path, width=520)
     st.write(
         """
-        ### How Intellectually Humble Are You?
+        ### Intellectual Humility Assessment 
+
         Do you have an intellectually humble mindset? Use this tool to find out.
-
-        Take this quiz to get your intellectual humility score! This app will ask you a series of questions to generate your intellectual humility score. Please rate how much you agree with each statement on a scale from 1 (strongly disagree) to 5 (strongly agree).
-
-        This app is currently experimental and uses generative AI! Please provide feedback and report any issues.
 
         **What is intellectual humility?**
         - Being open to new ideas
@@ -174,8 +171,19 @@ def main():
         - Challenging your assumptions, biases, and level of certainty about something or someone
 
         **Why should I care about intellectual humility?** 
-        - Researchers have found that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) is associated with positive traits like openness to new ideas and political views, greater scrutiny of misinformation, prosocial values, and empathy.
-        - Understanding and improving our own intellectual humility is a critical step in understanding political polarization and misinformation.
+        Researchers have found that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) is associated with positive traits like openness to new ideas and political views, greater scrutiny of misinformation, prosocial values, and empathy. Understanding and improving our own intellectual humility is a critical step in understanding political polarization and misinformation.
+
+        **Instructions**
+
+        This app will ask you a series of questions to generate your intellectual humility score. For each question, please select that option that indicates how well, if at all, you believe the phrase applies to yourself. 
+
+        1. I question my own opinions, positions, and viewpoints because they could be wrong
+        2. I reconsider my opinions when presented with new evidence.
+        3. I recognize the value in opinions that are different from my own
+        4. I accept that my beliefs and attitudes may be wrong
+        5. In the face of conflicting evidence, I am open to changing my opinions
+        6. I like finding out new information that differs from what I already think is true
+
         """
     )
     
@@ -315,7 +323,11 @@ def main():
             showlegend=True
         )
         st.plotly_chart(fig, use_container_width=True)
-        
+
+        st.write("""
+        No score is perfect. The average score is based on the mean intellectual humility score of 22.64 reported by Deffler, Leary, and Hoyle (2016).  
+        """
+        )
         if st.button("Reset Test"):
             reset_test()
             st.rerun()
@@ -379,12 +391,26 @@ def main():
         )
         st.plotly_chart(fig, use_container_width=True)
         
+        st.write("""
+        No score is perfect. The average score is based on the mean intellectual humility score of 22.64 reported by Deffler, Leary, and Hoyle (2016).  
+        """
+        )
+        
         # Add Reset Test button
         if st.button("Reset Test"):
             reset_test()
             st.rerun()
 
     display_chat()
+
+    st.write("""
+
+    This quiz is based on the scale developed by [Leary et al](https://pubmed.ncbi.nlm.nih.gov/28903672/). in their research on the features of intellectual humility. The app is currently experimental. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).
+
+
+
+    """
+    )
 
     # if not st.session_state.chat_history and st.session_state.current_question_index < len(QUESTIONS):
     #     first_question = QUESTIONS[st.session_state.current_question_index]
