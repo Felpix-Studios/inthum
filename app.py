@@ -170,8 +170,10 @@ def main():
         - Acknowledging that your knowledge and understanding can have limitations
         - Challenging your assumptions, biases, and level of certainty about something or someone
 
-        **Why should I care about intellectual humility?** 
-        Researchers have found that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) is associated with positive traits like openness to new ideas and political views, greater scrutiny of misinformation, prosocial values, and empathy. Understanding and improving our own intellectual humility is a critical step in understanding political polarization and misinformation.
+        **Why should I care about intellectual humility?**
+
+        Researchers have found that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) is associated with positive traits like openness to new ideas and political views, greater scrutiny of misinformation, prosocial values, and empathy. Understanding our intellectual humility is an important step in learning about our own blindspots.
+
 
         **Instructions**
 
