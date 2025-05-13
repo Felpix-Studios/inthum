@@ -126,6 +126,16 @@ def display_chat():
             st.chat_message("user").write(msg["content"])
 
 def reset_test():
+    for i in range(len(QUESTIONS)):
+        response_key = f"response_{i}"
+        if response_key in st.session_state:
+            del st.session_state[response_key]
+    
+    if "responses_temp" in st.session_state:
+        del st.session_state["responses_temp"]
+
+      
+
     for key in ['chat_history', 'responses', 'submitted_all', 'final_generated']:
         if key in st.session_state:
             st.session_state[key] = []
@@ -134,24 +144,39 @@ def reset_test():
 
 # -- Streamlit Application --
 def main():
-    st.markdown("""
-      <style>
-      /* Target the radio group container */
-      div[role="radiogroup"] {
-          display: flex;
-          justify-content: space-between;
-          gap: 15%; /* Adjust this for spacing between buttons */
-          width: 100%;
-          padding: 0px 0px;
-      }
 
-      /* Center and evenly space radio button labels */
-      div[role="radiogroup"] > label {
-          flex: 1;
-          text-align: center;
-      }
-      </style>
+    st.markdown("""
+    <style>
+    .likert-group button {
+        padding: 0.25rem 0.75rem;
+        width: 140px !important;        display: inline-flex;
+        align-items: center;
+    }
+
+    .force-active-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 400;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        padding: 0.25rem 0.75rem;
+        user-select: none;
+        color: white !important;
+        background-color: rgb(255, 75, 75) !important;
+        border: 1px solid rgb(255, 75, 75) !important;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
+        text-align: center;
+        transition: none !important;
+    }
+    </style>
     """, unsafe_allow_html=True)
+
+
+
+
 
     logo_path = "new_plab_logo.png"
     st.logo(logo_path, size = "large")
@@ -176,14 +201,7 @@ def main():
 
         **Instructions**
 
-        This app will ask you a series of questions to generate your intellectual humility score. For each question, please select that option that indicates how well, if at all, you believe the phrase applies to yourself. 
-
-        1. I question my own opinions, positions, and viewpoints because they could be wrong
-        2. I reconsider my opinions when presented with new evidence.
-        3. I recognize the value in opinions that are different from my own
-        4. I accept that my beliefs and attitudes may be wrong
-        5. In the face of conflicting evidence, I am open to changing my opinions
-        6. I like finding out new information that differs from what I already think is true
+        This tool will ask you a series of questions to generate your intellectual humility score. For each question, please select that option that indicates how well, if at all, you believe the phrase applies to yourself. 
 
         """
     )
@@ -199,65 +217,74 @@ def main():
         st.session_state.final_generated = False
 
     # -- Show all questions at once --
-    if not st.session_state.submitted_all:
-        st.markdown("### Questions")
-        response_dict = {}
+    if not st.session_state.get("submitted_all", False):
+      st.markdown("### Questions")
+      response_dict = {}
+  
+      likert_options = {
+          1: "Strongly Disagree",
+          2: "Disagree",
+          3: "Neutral",
+          4: "Agree",
+          5: "Strongly Agree"
+      }
+  
+      if "responses_temp" not in st.session_state:
+          st.session_state.responses_temp = {}
+  
+      for i, question in enumerate(QUESTIONS):
+          st.markdown(f"**Q{i + 1}. {question}**")
+  
+          if f"response_{i}" not in st.session_state:
+              st.session_state[f"response_{i}"] = None
 
-        likert_options = {
-            1: "Strongly Disagree",
-            2: "Disagree", 
-            3: "Neither Agree nor Disagree",
-            4: "Agree",
-            5: "Strongly Agree"
-        }
+          st.markdown('<div class = "likert-group">', unsafe_allow_html=True)
 
-        for i, question in enumerate(QUESTIONS):
-            st.markdown(f"**Q{i + 1}. {question}**")
+          button_cols = st.columns(5)
+          labels  = list(likert_options.values())
 
-            container = st.container()
+          for j, (col, label) in enumerate(zip(button_cols,labels)):
+              with col:
+                  btn_key = f"btn_{i}_{j+1}"
+                  is_selected = st.session_state[f"response_{i}"] == j + 1
 
+                  
+                  
 
-            left,center_col,right = container.columns([1.5, 10, 1])
-            with center_col:
-              selected_value = st.radio(
-                label="",
-                options=[1, 2, 3, 4, 5],
-                index = None,
-                format_func = lambda x: "",
-                horizontal=True,
-                key=f"radio{i}",
-              )
+                  if not is_selected:
+                      if(st.button(label, key=btn_key)):
+                          st.session_state[f"response_{i}"] = j + 1
+                          st.session_state.responses_temp[question] = j + 1 
+                          st.rerun()
+                  else:
+                      st.markdown(
+                          f"<button class ='force-active-button'>{label}</button>",
+                          unsafe_allow_html=True
+                      )
 
-            label_update_cols = container.columns(5)
-            for j, (col, label) in enumerate(zip(label_update_cols, ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"])):
-                with col:
-                    if j+1 == selected_value:
-                        st.markdown(f"<div style='text-align: center; font-size: 0.8em; font-weight: bold; color: #1E90FF;'>{label}</div>",     unsafe_allow_html=True)
-                    else:
-                        st.markdown(f"<div style='text-align: center; font-size: 0.8em; color: #666;'>{label}</div>", unsafe_allow_html=True)
+          st.markdown("</div>", unsafe_allow_html=True) 
+          st.write("---")
+  
+          response_dict[question] = st.session_state[f"response_{i}"]
+  
+      col1, col2, col3 = st.columns([1, 1, 1])
+      with col2:
+          submit_clicked = st.button("Submit All Answers", use_container_width=True, key="submit_all")
+      
 
-            st.write("")
-
-
-            st.write("---")
-
-            response_dict[question] = selected_value
-
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            submit_clicked = st.button("Submit All Answers", use_container_width=True, key="submit_all")
-            if submit_clicked:
-                missing = [q for q, ans in response_dict.items() if ans is None]
-                if missing:
+      if submit_clicked:
+              missing = [q for q, ans in response_dict.items() if ans is None]
+              if missing:
                   st.error("Please answer all questions before submitting.")
-                else:
-                    for q, ans in response_dict.items():
-                        st.session_state.responses.append({
-                            "question": q,
-                            "scale_answer": int(ans)
-                        })
-                    st.session_state.submitted_all = True
-                    st.rerun()
+              else:
+                  for idx, (q, ans) in enumerate(response_dict.items()):
+                      st.session_state.responses.append({
+                          "question": q,
+                          "scale_answer": int(ans)
+                      })
+                  st.session_state.submitted_all = True
+                  st.rerun()
+
 
 
 
@@ -317,7 +344,7 @@ def main():
 
         fig.update_layout(
             title='Estimated Density of Intellectual Humility Scores',
-            xaxis_title='Total Score (13–30)',
+            xaxis_title='Total Score',
             yaxis_title='Density',
             xaxis=dict(range=[13, 30]),
             template='simple_white',
@@ -384,7 +411,7 @@ def main():
 
         fig.update_layout(
             title='Estimated Density of Intellectual Humility Scores',
-            xaxis_title='Total Score (13–30)',
+            xaxis_title='Total Score',
             yaxis_title='Density',
             xaxis=dict(range=[13, 30]),
             template='simple_white',
