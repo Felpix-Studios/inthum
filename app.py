@@ -9,6 +9,7 @@ import streamlit as st
 
 # load_dotenv()
 # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+st.set_page_config(layout="wide")
 
 # -- Open-ended Questions --
 QUESTIONS = [
@@ -147,34 +148,51 @@ def main():
 
     st.markdown("""
     <style>
-    .likert-group button {
+                
+
+    .likert-group button,
+    .force-active-button {
+        width: auto;
         padding: 0.25rem 0.75rem;
-        width: 140px !important;        display: inline-flex;
-        align-items: center;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        text-align: center;
+        margin: 0 auto;
+        display: block;
+    }
+    .force-active-button {
+        background-color: rgb(255, 75, 75) !important;
+        color: white !important;
+        border: 1px solid rgb(255, 75, 75) !important;
+        box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
+        cursor: default;
+    }
+    .center-button {
+      display: flex !important;
+      justify-content: center !important;
+    }
+    .center-button button {
+      margin: 0 auto !important;
     }
 
-    .force-active-button {
-        display: inline-flex;
-        align-items: center;
+    div[data-testid="stButton"] {
+        display: flex;
         justify-content: center;
-        font-weight: 400;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        padding: 0.25rem 0.75rem;
-        user-select: none;
-        color: white !important;
-        background-color: rgb(255, 75, 75) !important;
-        border: 1px solid rgb(255, 75, 75) !important;
-        font-weight: 600;
-        transition: background-color 0.3s ease;
-        box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
-        text-align: center;
-        transition: none !important;
     }
+    
     </style>
     """, unsafe_allow_html=True)
 
 
+    st.html("""
+      <style>
+          .stMainBlockContainer {
+              max-width:72rem;
+          }
+      </style>
+      """
+    )
+    
 
 
 
@@ -243,13 +261,13 @@ def main():
 
           button_cols = st.columns(5)
           labels  = list(likert_options.values())
-
+          
           for j, (col, label) in enumerate(zip(button_cols,labels)):
               with col:
                   btn_key = f"btn_{i}_{j+1}"
                   is_selected = st.session_state[f"response_{i}"] == j + 1
 
-                  
+                  st.markdown('<div class="center-button">', unsafe_allow_html=True)
                   
 
                   if not is_selected:
@@ -262,6 +280,8 @@ def main():
                           f"<button class ='force-active-button'>{label}</button>",
                           unsafe_allow_html=True
                       )
+
+                  st.markdown("</div>", unsafe_allow_html=True)
 
           st.markdown("</div>", unsafe_allow_html=True) 
           st.write("---")
