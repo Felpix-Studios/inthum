@@ -453,7 +453,7 @@ def main():
 
     st.write("""
 
-    This quiz is based on the scale developed by [Leary et al](https://pubmed.ncbi.nlm.nih.gov/28903672/). in their research on the features of intellectual humility. The tool is currently experimental. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).
+    This quiz is based on the scale developed by [Leary et al](https://pubmed.ncbi.nlm.nih.gov/28903672/). in their research on the features of intellectual humility. This tool is currently experimental and was developed with support from the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).
 
 
 
