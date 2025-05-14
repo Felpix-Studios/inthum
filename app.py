@@ -214,7 +214,7 @@ def main():
 
         **Why should I care about intellectual humility?**
 
-        Research suggests that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) may improve well-being, enhance tolerance from other perspectives, and promote inquiry and learning. Understanding our intellectual humility is an important step in learning about our own blindspots.
+        Research suggests that [intellectual humility](https://www.templeton.org/news/what-is-intellectual-humility) may improve well-being, enhance tolerance from other perspectives, and promote inquiry and learning. Understanding our intellectual humility is an important step in learning about our own blindspots.
 
 
 
@@ -329,7 +329,7 @@ def main():
             st.info("Your score is in the **middle range**. You may be intellectually humble in some situations more than others.")
         mean_score = 22.64
         std_dev = 3.98
-        x_vals_cut = np.linspace(13, 30, 500)
+        x_vals_cut = np.linspace(6, 30, 500)
         y_vals_cut = norm.pdf(x_vals_cut, loc=mean_score, scale=std_dev)
 
         fig = go.Figure()
@@ -355,7 +355,7 @@ def main():
 
         fig.add_trace(go.Scatter(
             x=[total_score, total_score],
-            y=[0, norm.pdf(total_score, loc=mean_score, scale=std_dev)],
+            y=[0, 0.1],
             mode='lines',
             line=dict(color='green', dash='dot'),
             name=f'Your Score = {total_score}',
@@ -367,7 +367,7 @@ def main():
             title='Estimated Density of Intellectual Humility Scores',
             xaxis_title='Total Score',
             yaxis_title='Density',
-            xaxis=dict(range=[13, 30]),
+            xaxis=dict(range=[6, 30]),
             template='simple_white',
             showlegend=True
         )
@@ -397,7 +397,7 @@ def main():
         
         mean_score = 22.64
         std_dev = 3.98
-        x_vals_cut = np.linspace(13, 30, 500)
+        x_vals_cut = np.linspace(6, 30, 500)
         y_vals_cut = norm.pdf(x_vals_cut, loc=mean_score, scale=std_dev)
 
         fig = go.Figure()
@@ -423,7 +423,7 @@ def main():
 
         fig.add_trace(go.Scatter(
             x=[total_score, total_score],
-            y=[0, norm.pdf(total_score, loc=mean_score, scale=std_dev)],
+            y=[0, 0.1],
             mode='lines',
             line=dict(color='green', dash='dot'),
             name=f'Your Score = {total_score}',
@@ -434,7 +434,7 @@ def main():
             title='Estimated Density of Intellectual Humility Scores',
             xaxis_title='Total Score',
             yaxis_title='Density',
-            xaxis=dict(range=[13, 30]),
+            xaxis=dict(range=[6, 30]),
             template='simple_white',
             showlegend=True
         )
@@ -454,7 +454,7 @@ def main():
 
     st.write("""
 
-    This quiz is based on the scale developed by [Leary et al](https://pubmed.ncbi.nlm.nih.gov/28903672/). in their research on the features of intellectual humility. The app is currently experimental. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).
+    This quiz is based on the scale developed by [Leary et al](https://pubmed.ncbi.nlm.nih.gov/28903672/). in their research on the features of intellectual humility. The tool is currently experimental. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).
 
 
 
