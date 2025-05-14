@@ -196,12 +196,13 @@ def main():
 
         **Why should I care about intellectual humility?**
 
-        Researchers have found that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) is associated with positive traits like openness to new ideas and political views, greater scrutiny of misinformation, prosocial values, and empathy. Understanding our intellectual humility is an important step in learning about our own blindspots.
+        Research suggests that [intellectual humility](https://constructivedialogue.org/assets/10651-Article-102975-1-10-20230821.pdf) may improve well-being, enhance tolerance from other perspectives, and promote inquiry and learning. Understanding our intellectual humility is an important step in learning about our own blindspots.
+
 
 
         **Instructions**
 
-        This tool will ask you a series of questions to generate your intellectual humility score. For each question, please select that option that indicates how well, if at all, you believe the phrase applies to yourself. 
+        This tool will ask you a series of questions to generate your intellectual humility score. Your score is then compared to the average score from a study involving 402 people. For each question, please select the option that indicates how well, if at all, you believe the phrase applies to yourself. 
 
         """
     )
@@ -222,11 +223,11 @@ def main():
       response_dict = {}
   
       likert_options = {
-          1: "Strongly Disagree",
-          2: "Disagree",
-          3: "Neutral",
-          4: "Agree",
-          5: "Strongly Agree"
+          1: "Not at All",
+          2: "Not Well",
+          3: "Somewhat Well",
+          4: "Well",
+          5: "Very Well"
       }
   
       if "responses_temp" not in st.session_state:
