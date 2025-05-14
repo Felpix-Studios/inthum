@@ -9,7 +9,6 @@ import streamlit as st
 
 # load_dotenv()
 # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-st.set_page_config(layout="wide")
 
 # -- Open-ended Questions --
 QUESTIONS = [
