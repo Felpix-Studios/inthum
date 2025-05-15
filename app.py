@@ -373,7 +373,7 @@ def main():
         st.plotly_chart(fig, use_container_width=True)
 
         st.write("""
-        No score is perfect. The average score is based on the mean intellectual humility score of 22.64 reported by Deffler, Leary, and Hoyle (2016).  
+        The average score is based on the mean intellectual humility score of 22.64 reported by Deffler, Leary, and Hoyle (2016).  
         """
         )
         if st.button("Reset Test"):
