@@ -210,7 +210,6 @@ def questions_page():
       </style>
       """
     )
-    st.markdown("### Questions")
     response_dict = {}
     likert_options = {
         1: "Not at All",
