@@ -40,7 +40,7 @@ def intro_page():
       setTimeout(function() {
         var anchor = document.getElementById("top-anchor");
         if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-      }, 200);
+      }, 500);
     </script>
     """, unsafe_allow_html=True)
 
@@ -195,7 +195,7 @@ def questions_page():
       setTimeout(function() {
         var anchor = document.getElementById("top-anchor");
         if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-      }, 200);
+      }, 500);
     </script>
     """, unsafe_allow_html=True)
 
@@ -314,7 +314,7 @@ def results_page():
       setTimeout(function() {
         var anchor = document.getElementById("top-anchor");
         if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-      }, 200);
+      }, 500);
     </script>
     """, unsafe_allow_html=True)
 
