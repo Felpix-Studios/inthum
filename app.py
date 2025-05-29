@@ -403,8 +403,8 @@ def results_page():
     total_score = sum(scores)
 
     st.markdown('<div id="scroll-anchor"></div>', unsafe_allow_html=True)
-    st.title("Your Score")
-    st.write(f"##### Your score is {total_score} out of {5 * len(scores)}")
+    st.title("Results: Intellectual Humility Assessment")
+    st.write(f"### Your score is {total_score} out of {5 * len(scores)}")
 
     st.markdown("**How does your score compare to the average person?**")
     if total_score >= 25:
