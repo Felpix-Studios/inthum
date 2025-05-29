@@ -206,11 +206,11 @@ def intro_page():
 
         **Why should I care about intellectual humility?**
 
-        Research shows [intellectual humility](https://www.templeton.org/news/what-is-intellectual-humility) enhances tolerance from other perspectives and promotes inquiry.
+        Research shows [intellectual humility](https://www.templeton.org/news/what-is-intellectual-humility) may enhance tolerance from other perspectives and promote inquiry.
 
         **Instructions**
 
-        This quiz asks six questions and will compare your score to the general public (Leary et al., 2016).
+        This quiz asks six questions to generate your intellectual humility score and will compare your score to the general public (Leary et al., 2016).
 
         *This quiz is based on the scale developed by [Leary et al.](https://pubmed.ncbi.nlm.nih.gov/28903672/) in their research on the features of intellectual humility. This quiz is currently experimental and was partially supported by the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).*
         """
@@ -404,7 +404,7 @@ def results_page():
 
     st.markdown('<div id="scroll-anchor"></div>', unsafe_allow_html=True)
     st.title("Your Score")
-    st.write(f"**Your score is {total_score} out of {5 * len(scores)}**")
+    st.write(f"##### Your score is {total_score} out of {5 * len(scores)}")
 
     st.markdown("**How does your score compare to the average person?**")
     if total_score >= 25:
