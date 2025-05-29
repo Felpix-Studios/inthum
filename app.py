@@ -40,7 +40,7 @@ def intro_page():
       setTimeout(function() {
         var anchor = document.getElementById("top-anchor");
         if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-      }, 500);
+      }, 1000);
     </script>
     """, unsafe_allow_html=True)
 
@@ -159,7 +159,7 @@ def intro_page():
     st.title("Intellectual Humility Assessment")
     st.write(
         """
-        ##### Do you have an intellectually humble mindset? Use this quiz to find out!
+        **Do you have an intellectually humble mindset? Use this quiz to find out!**
 
         **What is intellectual humility?**
         - Being open to new ideas
@@ -189,6 +189,7 @@ def intro_page():
                 document.documentElement.scrollTop = 0;
             </script>
             """, unsafe_allow_html=True)
+            time.sleep(0.05)
             st.session_state.current_page = "questions"
             st.rerun()
 
@@ -205,7 +206,7 @@ def questions_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 500);
+      }, 1000);
     </script>
     """, unsafe_allow_html=True)
     
@@ -268,7 +269,7 @@ def questions_page():
         4: "Well",
         5: "Very Well"
     }
-    st.write("###### How well do each of the following statements apply to you?")
+    st.write("*How well do each of the following statements apply to you?*")
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
     for i, question in enumerate(QUESTIONS):
@@ -312,6 +313,7 @@ def questions_page():
                 document.documentElement.scrollTop = 0;
             </script>
             """, unsafe_allow_html=True)
+            time.sleep(0.05)
             st.session_state.responses = []
             for idx, (q, ans) in enumerate(response_dict.items()):
                 st.session_state.responses.append({
@@ -336,7 +338,7 @@ def results_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 500);
+      }, 1000);
     </script>
     """, unsafe_allow_html=True)
 
@@ -391,9 +393,9 @@ def results_page():
     total_score = sum(scores)
     st.title("Your Score")
 
-    st.write(f"##### Your score is {total_score} out of {5 * len(scores)}")
+    st.write(f"**Your score is {total_score} out of {5 * len(scores)}**")
 
-    st.markdown("##### How does your score compare to the average person?")
+    st.markdown("**How does your score compare to the average person?**")
     if total_score >= 25:
         st.success("Your score places you in the **top 25%** for intellectual humility. 💡")
     elif total_score <= 20:
