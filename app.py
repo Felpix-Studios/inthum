@@ -9,7 +9,39 @@ import streamlit as st
 def scroll_to_top():
     components.html("""
         <script>
-            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+            function doScroll() {
+                var container = null;
+                try {
+                    if (window.parent && window.parent.document) {
+                        container = window.parent.document.querySelector('.stMainBlockContainer');
+                    }
+                } catch (e) {
+                    container = document.querySelector('.stMainBlockContainer');
+                }
+                if (container) {
+                    // Use scrollIntoView with block: 'start', then force scroll to top as a fallback
+                    container.scrollIntoView({behavior: 'auto', block: 'start'});
+                    setTimeout(function() {
+                        if (window.parent && window.parent.scrollTo) {
+                            window.parent.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                        }
+                        if (window.scrollTo) {
+                            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                        }
+                    }, 10);
+                } else {
+                    if (window.parent && window.parent.scrollTo) {
+                        window.parent.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                    }
+                    if (window.scrollTo) {
+                        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                    }
+                }
+            }
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            setTimeout(doScroll, 10);
         </script>
     """, height=0)
 
@@ -42,7 +74,6 @@ def reset_test():
 
 # -- Streamlit Application --
 def intro_page():
-
     st.markdown("""
     <style>
     .likert-group button,
@@ -182,6 +213,7 @@ def intro_page():
         if st.button("Start Assessment", key="to_questions", use_container_width=True):
             st.session_state.current_page = "questions"
             st.rerun()
+    
 
 
 
@@ -246,7 +278,9 @@ def questions_page():
         4: "Well",
         5: "Very Well"
     }
+    
     st.write("*How well do each of the following statements apply to you?*")
+    
     
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
@@ -303,7 +337,6 @@ def questions_page():
     
 
 def results_page():
-
     st.markdown("""
     <style>
     .likert-group button,
@@ -353,8 +386,9 @@ def results_page():
         return
     scores = [resp["scale_answer"] for resp in st.session_state.responses]
     total_score = sum(scores)
-    st.title("Your Score")
 
+    st.markdown('<div id="scroll-anchor"></div>', unsafe_allow_html=True)
+    st.title("Your Score")
     st.write(f"**Your score is {total_score} out of {5 * len(scores)}**")
 
     st.markdown("**How does your score compare to the average person?**")
@@ -424,8 +458,8 @@ def results_page():
             reset_test()
             st.session_state.current_page = "intro"
             st.rerun()
-    
     scroll_to_top()
+    
 
 
 # -- Streamlit Application --
