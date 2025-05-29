@@ -180,14 +180,28 @@ def questions_page():
     <style>
     .likert-group button,
     .force-active-button {
-        width: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 400;
         padding: 0.25rem 0.75rem;
-        font-weight: 500;
         border-radius: 0.5rem;
-        text-align: left;
-        margin: 0.1rem 0 0.1rem 0;
-        display: block;
+        min-height: 2.5rem;
+        margin: 0px;
+        line-height: 1.6;
+        text-transform: none;
+        font-size: inherit;
+        font-family: inherit;
+        color: inherit;
+        width: auto;
+        cursor: pointer;
+        user-select: none;
+        background-color: #fff;
+        border: 1px solid rgba(49, 51, 63, 0.2);
         box-sizing: border-box;
+        text-align: left;
+        box-shadow: none;
+        transition: background 0.1s, border 0.1s;
     }
     .likert-group {
       max-width: 480px;
