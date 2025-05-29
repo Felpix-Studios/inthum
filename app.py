@@ -176,9 +176,7 @@ def intro_page():
       margin-top: 0 !important;
       margin-bottom: 0 !important;
     }
-    img[data-testid="stLogo"] {
-      height: 3.5rem;
-    }
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -267,9 +265,7 @@ def questions_page():
         box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
         cursor: default;
     }
-    img[data-testid="stLogo"] {
-      height: 3.5rem;
-    }
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -378,9 +374,7 @@ def results_page():
         justify-content: center;
     }
                 
-    img[data-testid="stLogo"] {
-      height: 3.5rem;
-    }
+
     </style>
     """, unsafe_allow_html=True)
 
