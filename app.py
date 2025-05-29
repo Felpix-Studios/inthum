@@ -36,11 +36,22 @@ def reset_test():
 def intro_page():
     st.markdown("""
     <a id="top-anchor"></a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      setTimeout(function() {
-        var anchor = document.getElementById("top-anchor");
-        if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-      }, 1000);
+    /*=========== Force Scroll to Top ===========*/
+    var userHasNotScrolled = true;
+    $(window).on('touchmove', function(e) {
+        userHasNotScrolled = false;
+    });
+    if(/mobi/i.test(navigator.userAgent) && !location.hash)
+    {
+        setTimeout(function () {
+            if (!pageYOffset && userHasNotScrolled)
+            {
+                window.scrollTo(0, 1);
+            }
+        }, 1000);
+    }
     </script>
     """, unsafe_allow_html=True)
 
@@ -182,14 +193,6 @@ def intro_page():
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button("Start Assessment", key="to_questions", use_container_width=True):
-            st.markdown("""
-            <script>
-                window.scrollTo(0, 1);
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-            </script>
-            """, unsafe_allow_html=True)
-            time.sleep(0.05)
             st.session_state.current_page = "questions"
             st.rerun()
 
@@ -199,14 +202,22 @@ def intro_page():
 def questions_page():
     st.markdown("""
     <a id="top-anchor"></a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      setTimeout(function() {
-        var anchor = document.getElementById("top-anchor");
-        if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-        window.scrollTo(0, 1);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      }, 1000);
+    /*=========== Force Scroll to Top ===========*/
+    var userHasNotScrolled = true;
+    $(window).on('touchmove', function(e) {
+           userHasNotScrolled = false;
+    });
+    if(/mobi/i.test(navigator.userAgent) && !location.hash)
+    {
+        setTimeout(function () {
+            if (!pageYOffset && userHasNotScrolled)
+        {
+            window.scrollTo(0, 1);
+        }
+        }, 1000);
+    }
     </script>
     """, unsafe_allow_html=True)
     
@@ -306,14 +317,6 @@ def questions_page():
         if missing:
             st.error("Please answer all questions before submitting.")
         else:
-            st.markdown("""
-            <script>
-                window.scrollTo(0, 1);
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-            </script>
-            """, unsafe_allow_html=True)
-            time.sleep(0.05)
             st.session_state.responses = []
             for idx, (q, ans) in enumerate(response_dict.items()):
                 st.session_state.responses.append({
@@ -331,14 +334,22 @@ def questions_page():
 def results_page():
     st.markdown("""
     <a id="top-anchor"></a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      setTimeout(function() {
-        var anchor = document.getElementById("top-anchor");
-        if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-        window.scrollTo(0, 1);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      }, 1000);
+    /*=========== Force Scroll to Top ===========*/
+    var userHasNotScrolled = true;
+    $(window).on('touchmove', function(e) {
+        userHasNotScrolled = false;
+    });
+    if(/mobi/i.test(navigator.userAgent) && !location.hash)
+    {
+        setTimeout(function () {
+            if (!pageYOffset && userHasNotScrolled)
+            {
+                window.scrollTo(0, 1);
+            }
+        }, 1000);
+    }
     </script>
     """, unsafe_allow_html=True)
 
