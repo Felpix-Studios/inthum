@@ -186,18 +186,7 @@ def intro_page():
             st.session_state.current_page = "questions"
             st.rerun()
 
-    st.markdown(
-    """
-    <script>
-      setTimeout(function() {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      }, 200);
-    </script>
-    """,
-    unsafe_allow_html=True
-    )
+
 
 
 def questions_page():
@@ -317,18 +306,7 @@ def questions_page():
             st.session_state.current_page = "results"
             st.rerun()
 
-    st.markdown(
-    """
-    <script>
-      setTimeout(function() {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      }, 200);
-    </script>
-    """,
-    unsafe_allow_html=True
-    )
+
     
 
 
@@ -467,18 +445,6 @@ def results_page():
             st.session_state.current_page = "intro"
             st.rerun()
 
-    st.markdown(
-    """
-    <script>
-      setTimeout(function() {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      }, 200);
-    </script>
-    """,
-    unsafe_allow_html=True
-    )
 
 # -- Streamlit Application --
 def main():
