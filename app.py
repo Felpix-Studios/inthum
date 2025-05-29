@@ -37,7 +37,11 @@ def intro_page():
     st.markdown(
     """
     <script>
+      setTimeout(function() {
         window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 100);
     </script>
     """,
     unsafe_allow_html=True
@@ -185,7 +189,11 @@ def intro_page():
     st.markdown(
     """
     <script>
+      setTimeout(function() {
         window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 100);
     </script>
     """,
     unsafe_allow_html=True
@@ -196,7 +204,11 @@ def questions_page():
     st.markdown(
     """
     <script>
+      setTimeout(function() {
         window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 100);
     </script>
     """,
     unsafe_allow_html=True
@@ -304,10 +316,15 @@ def questions_page():
             st.session_state.submitted_all = True
             st.session_state.current_page = "results"
             st.rerun()
+
     st.markdown(
     """
     <script>
+      setTimeout(function() {
         window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 100);
     </script>
     """,
     unsafe_allow_html=True
@@ -319,11 +336,16 @@ def results_page():
     st.markdown(
     """
     <script>
+      setTimeout(function() {
         window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 100);
     </script>
     """,
     unsafe_allow_html=True
     )
+
     st.markdown("""
     <style>
     .likert-group button,
@@ -444,11 +466,15 @@ def results_page():
             reset_test()
             st.session_state.current_page = "intro"
             st.rerun()
-            
+
     st.markdown(
     """
     <script>
+      setTimeout(function() {
         window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 100);
     </script>
     """,
     unsafe_allow_html=True
