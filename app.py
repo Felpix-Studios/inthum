@@ -189,6 +189,7 @@ def intro_page():
 
 
 def questions_page():
+    st.rerun()
     st.markdown("""
     <a id="top-anchor"></a>
     <script>
@@ -201,6 +202,7 @@ def questions_page():
       }, 500);
     </script>
     """, unsafe_allow_html=True)
+
 
     st.markdown("""
     <style>
@@ -311,6 +313,7 @@ def questions_page():
 
 
 def results_page():
+    st.rerun()
     st.markdown("""
     <a id="top-anchor"></a>
     <script>
