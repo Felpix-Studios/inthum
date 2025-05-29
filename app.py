@@ -34,6 +34,14 @@ def reset_test():
 
 # -- Streamlit Application --
 def intro_page():
+    st.markdown(
+    """
+    <script>
+        window.scrollTo(0, 0);
+    </script>
+    """,
+    unsafe_allow_html=True
+    )
     st.markdown("""
     <style>
     .likert-group button,
@@ -159,13 +167,13 @@ def intro_page():
 
         **Why should I care about intellectual humility?**
 
-        Research shows [intellectual humility](https://www.templeton.org/news/what-is-intellectual-humility) enhances tolerance from other perspectives and promotes inquiry. Understanding our intellectual humility is an important step in learning about our own blindspots.
+        Research shows [intellectual humility](https://www.templeton.org/news/what-is-intellectual-humility) enhances tolerance from other perspectives and promotes inquiry.
 
         **Instructions**
 
         This quiz asks six questions and will compare your score to the general public (Leary et al., 2016).
 
-        *This quiz is based on the scale developed by [Leary et al.](https://pubmed.ncbi.nlm.nih.gov/28903672/) in their research on the features of intellectual humility. This tool is currently experimental and was partially supported by the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).*
+        *This quiz is based on the scale developed by [Leary et al.](https://pubmed.ncbi.nlm.nih.gov/28903672/) in their research on the features of intellectual humility. This quiz is currently experimental and was partially supported by the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).*
         """
     )
     col1, col2, col3 = st.columns([1, 1, 1])
@@ -176,6 +184,14 @@ def intro_page():
 
 
 def questions_page():
+    st.markdown(
+    """
+    <script>
+        window.scrollTo(0, 0);
+    </script>
+    """,
+    unsafe_allow_html=True
+    )
     st.markdown("""
     <style>
     .likert-group button,
@@ -283,6 +299,14 @@ def questions_page():
 
 
 def results_page():
+    st.markdown(
+    """
+    <script>
+        window.scrollTo(0, 0);
+    </script>
+    """,
+    unsafe_allow_html=True
+    )
     st.markdown("""
     <style>
     .likert-group button,
