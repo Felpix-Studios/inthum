@@ -2,8 +2,16 @@ import os
 import time
 import plotly.graph_objects as go
 import numpy as np
+import streamlit.components.v1 as components
 from scipy.stats import norm
 import streamlit as st
+
+def scroll_to_top():
+    components.html("""
+        <script>
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        </script>
+    """, height=0)
 
 QUESTIONS = [
     "I question my own opinions, positions, and viewpoints because they could be wrong.",
@@ -34,18 +42,6 @@ def reset_test():
 
 # -- Streamlit Application --
 def intro_page():
-    st.markdown("""
-    <a id=\"top-anchor\"></a>
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            var body = window.parent.document.querySelector('.stApp');
-            if (body) {
-                body.scrollTop = 0;
-            }
-        });
-    </script>
-    """, unsafe_allow_html=True)
-
 
     st.markdown("""
     <style>
@@ -192,19 +188,6 @@ def intro_page():
 
 def questions_page():
     st.markdown("""
-    <a id=\"top-anchor\"></a>
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            var body = window.parent.document.querySelector('.stApp');
-            if (body) {
-                body.scrollTop = 0;
-            }
-        });
-    </script>
-    """, unsafe_allow_html=True)
-    
-
-    st.markdown("""
     <style>
     .likert-group button,
     .force-active-button {
@@ -247,6 +230,7 @@ def questions_page():
     }
     </style>
     """, unsafe_allow_html=True)
+
     st.html("""
       <style>
           .stMainBlockContainer {
@@ -263,6 +247,7 @@ def questions_page():
         5: "Very Well"
     }
     st.write("*How well do each of the following statements apply to you?*")
+    
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
     for i, question in enumerate(QUESTIONS):
@@ -287,6 +272,8 @@ def questions_page():
         st.markdown("</div>", unsafe_allow_html=True)
         response_dict[question] = st.session_state[f"response_{i}"]
     st.markdown("---")
+
+    
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         submit_clicked = st.button("Submit All Answers", use_container_width=True, key="submit_all")
@@ -308,23 +295,14 @@ def questions_page():
             st.session_state.submitted_all = True
             st.session_state.current_page = "results"
             st.rerun()
+    scroll_to_top()
 
+            
+    
 
     
 
-
 def results_page():
-    st.markdown("""
-    <a id=\"top-anchor\"></a>
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            var body = window.parent.document.querySelector('.stApp');
-            if (body) {
-                body.scrollTop = 0;
-            }
-        });
-    </script>
-    """, unsafe_allow_html=True)
 
     st.markdown("""
     <style>
@@ -446,6 +424,8 @@ def results_page():
             reset_test()
             st.session_state.current_page = "intro"
             st.rerun()
+    
+    scroll_to_top()
 
 
 # -- Streamlit Application --
