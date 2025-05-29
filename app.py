@@ -41,7 +41,7 @@ def intro_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 100);
+      }, 200);
     </script>
     """,
     unsafe_allow_html=True
@@ -193,7 +193,7 @@ def intro_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 100);
+      }, 200);
     </script>
     """,
     unsafe_allow_html=True
@@ -208,7 +208,7 @@ def questions_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 100);
+      }, 200);
     </script>
     """,
     unsafe_allow_html=True
@@ -324,7 +324,7 @@ def questions_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 100);
+      }, 200);
     </script>
     """,
     unsafe_allow_html=True
@@ -340,7 +340,7 @@ def results_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 100);
+      }, 200);
     </script>
     """,
     unsafe_allow_html=True
@@ -474,7 +474,7 @@ def results_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 100);
+      }, 200);
     </script>
     """,
     unsafe_allow_html=True
