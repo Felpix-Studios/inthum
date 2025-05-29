@@ -182,6 +182,13 @@ def intro_page():
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button("Start Assessment", key="to_questions", use_container_width=True):
+            st.markdown("""
+            <script>
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            </script>
+            """, unsafe_allow_html=True)
             st.session_state.current_page = "questions"
             st.rerun()
 
@@ -261,8 +268,7 @@ def questions_page():
         4: "Well",
         5: "Very Well"
     }
-    st.title("")
-    st.write("*How well do each of the following statements apply to you?*")
+    st.write("###### How well do each of the following statements apply to you?")
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
     for i, question in enumerate(QUESTIONS):
@@ -293,11 +299,19 @@ def questions_page():
         if st.button("Back to Introduction", key="back_intro", use_container_width=True):
             st.session_state.current_page = "intro"
             st.rerun()
+
     if submit_clicked:
         missing = [q for q, ans in response_dict.items() if ans is None]
         if missing:
             st.error("Please answer all questions before submitting.")
         else:
+            st.markdown("""
+            <script>
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            </script>
+            """, unsafe_allow_html=True)
             st.session_state.responses = []
             for idx, (q, ans) in enumerate(response_dict.items()):
                 st.session_state.responses.append({
