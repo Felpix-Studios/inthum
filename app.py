@@ -115,7 +115,7 @@ def intro_page():
     st.title("Intellectual Humility Assessment")
     st.write(
         """
-        ##### Do you have an intellectually humble mindset? Use this quiz to find out..
+        ##### Do you have an intellectually humble mindset? Use this quiz to find out!
 
         **What is intellectual humility?**
         - Being open to new ideas
