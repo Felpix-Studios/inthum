@@ -182,6 +182,15 @@ def intro_page():
             st.session_state.current_page = "questions"
             st.rerun()
 
+    st.markdown(
+    """
+    <script>
+        window.scrollTo(0, 0);
+    </script>
+    """,
+    unsafe_allow_html=True
+    )
+
 
 def questions_page():
     st.markdown(
@@ -295,6 +304,14 @@ def questions_page():
             st.session_state.submitted_all = True
             st.session_state.current_page = "results"
             st.rerun()
+    st.markdown(
+    """
+    <script>
+        window.scrollTo(0, 0);
+    </script>
+    """,
+    unsafe_allow_html=True
+    )
     
 
 
@@ -427,6 +444,15 @@ def results_page():
             reset_test()
             st.session_state.current_page = "intro"
             st.rerun()
+            
+    st.markdown(
+    """
+    <script>
+        window.scrollTo(0, 0);
+    </script>
+    """,
+    unsafe_allow_html=True
+    )
 
 # -- Streamlit Application --
 def main():
