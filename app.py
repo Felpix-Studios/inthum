@@ -6,6 +6,10 @@ import streamlit.components.v1 as components
 from scipy.stats import norm
 import streamlit as st
 
+
+logo_path = "new_plab_logo.png"
+
+
 def scroll_to_top():
     components.html("""
         <script>
@@ -172,6 +176,9 @@ def intro_page():
       margin-top: 0 !important;
       margin-bottom: 0 !important;
     }
+    img[data-testid="stLogo"] {
+      height: 3.5rem;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -183,8 +190,8 @@ def intro_page():
       </style>
       """
     )
-    logo_path = "new_plab_logo.png"
-    st.logo(logo_path, size = "large")
+    
+    st.logo(logo_path, size = "large", link = "https://www.polarizationlab.com/")
     st.title("Intellectual Humility Assessment")
     st.write(
         """
@@ -260,6 +267,9 @@ def questions_page():
         box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
         cursor: default;
     }
+    img[data-testid="stLogo"] {
+      height: 3.5rem;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -278,7 +288,7 @@ def questions_page():
         4: "Well",
         5: "Very Well"
     }
-    
+    st.logo(logo_path, size = "large", link = "https://www.polarizationlab.com/")
     st.write("*How well do each of the following statements apply to you?*")
     
     
@@ -367,6 +377,10 @@ def results_page():
         display: flex;
         justify-content: center;
     }
+                
+    img[data-testid="stLogo"] {
+      height: 3.5rem;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -378,6 +392,7 @@ def results_page():
       </style>
       """
     )
+    st.logo(logo_path, size = "large", link = "https://www.polarizationlab.com/")
     if not st.session_state.get("submitted_all", False):
         st.warning("You must answer all questions first.")
         if st.button("Go to Questions", key="to_questions_from_results"):
