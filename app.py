@@ -183,6 +183,18 @@ def intro_page():
     with col2:
         if st.button("Start Assessment", key="to_questions", use_container_width=True):
             st.session_state.current_page = "questions"
+            st.markdown(
+              """
+              <script>
+                setTimeout(function() {
+                  window.scrollTo(0, 0);
+                  document.body.scrollTop = 0;
+                  document.documentElement.scrollTop = 0;
+                }, 100);
+              </script>
+              """,
+              unsafe_allow_html=True
+              )
             st.rerun()
 
 
