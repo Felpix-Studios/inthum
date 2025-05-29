@@ -35,23 +35,12 @@ def reset_test():
 # -- Streamlit Application --
 def intro_page():
     st.markdown("""
-    <a id="top-anchor"></a>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <a id=\"top-anchor\"></a>
     <script>
-    /*=========== Force Scroll to Top ===========*/
-    var userHasNotScrolled = true;
-    $(window).on('touchmove', function(e) {
-        userHasNotScrolled = false;
-    });
-    if(/mobi/i.test(navigator.userAgent) && !location.hash)
-    {
-        setTimeout(function () {
-            if (!pageYOffset && userHasNotScrolled)
-            {
-                window.scrollTo(0, 1);
-            }
-        }, 1000);
-    }
+        var body = window.parent.document.querySelector('.main');
+        if (body) {
+            body.scrollTop = 0;
+        }
     </script>
     """, unsafe_allow_html=True)
 
@@ -201,23 +190,12 @@ def intro_page():
 
 def questions_page():
     st.markdown("""
-    <a id="top-anchor"></a>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <a id=\"top-anchor\"></a>
     <script>
-    /*=========== Force Scroll to Top ===========*/
-    var userHasNotScrolled = true;
-    $(window).on('touchmove', function(e) {
-           userHasNotScrolled = false;
-    });
-    if(/mobi/i.test(navigator.userAgent) && !location.hash)
-    {
-        setTimeout(function () {
-            if (!pageYOffset && userHasNotScrolled)
-        {
-            window.scrollTo(0, 1);
+        var body = window.parent.document.querySelector('.main');
+        if (body) {
+            body.scrollTop = 0;
         }
-        }, 1000);
-    }
     </script>
     """, unsafe_allow_html=True)
     
@@ -333,23 +311,12 @@ def questions_page():
 
 def results_page():
     st.markdown("""
-    <a id="top-anchor"></a>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <a id=\"top-anchor\"></a>
     <script>
-    /*=========== Force Scroll to Top ===========*/
-    var userHasNotScrolled = true;
-    $(window).on('touchmove', function(e) {
-        userHasNotScrolled = false;
-    });
-    if(/mobi/i.test(navigator.userAgent) && !location.hash)
-    {
-        setTimeout(function () {
-            if (!pageYOffset && userHasNotScrolled)
-            {
-                window.scrollTo(0, 1);
-            }
-        }, 1000);
-    }
+        var body = window.parent.document.querySelector('.main');
+        if (body) {
+            body.scrollTop = 0;
+        }
     </script>
     """, unsafe_allow_html=True)
 
