@@ -183,20 +183,7 @@ def intro_page():
     with col2:
         if st.button("Start Assessment", key="to_questions", use_container_width=True):
             st.session_state.current_page = "questions"
-            st.markdown(
-            """
-                <script>
-                    window.scrollTo(0, 0);
-                    document.body.scrollTop = 0;
-                    document.documentElement.scrollTop = 0;
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 50);
-                </script>
-                """,
-                unsafe_allow_html=True
-            )
-            st.stop()
+            st.rerun()
 
 
 
@@ -208,7 +195,10 @@ def questions_page():
       setTimeout(function() {
         var anchor = document.getElementById("top-anchor");
         if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-      }, 500);
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 200);
     </script>
     """, unsafe_allow_html=True)
 
@@ -327,7 +317,10 @@ def results_page():
       setTimeout(function() {
         var anchor = document.getElementById("top-anchor");
         if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
-      }, 500);
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 200);
     </script>
     """, unsafe_allow_html=True)
 
