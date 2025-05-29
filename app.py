@@ -34,18 +34,17 @@ def reset_test():
 
 # -- Streamlit Application --
 def intro_page():
-    st.markdown(
-    """
+    st.markdown("""
+    <a id="top-anchor"></a>
     <script>
       setTimeout(function() {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+        var anchor = document.getElementById("top-anchor");
+        if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
       }, 200);
     </script>
-    """,
-    unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
+
+
     st.markdown("""
     <style>
     .likert-group button,
@@ -190,18 +189,16 @@ def intro_page():
 
 
 def questions_page():
-    st.markdown(
-    """
+    st.markdown("""
+    <a id="top-anchor"></a>
     <script>
       setTimeout(function() {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+        var anchor = document.getElementById("top-anchor");
+        if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
       }, 200);
     </script>
-    """,
-    unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
+
     st.markdown("""
     <style>
     .likert-group button,
@@ -311,18 +308,15 @@ def questions_page():
 
 
 def results_page():
-    st.markdown(
-    """
+    st.markdown("""
+    <a id="top-anchor"></a>
     <script>
       setTimeout(function() {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+        var anchor = document.getElementById("top-anchor");
+        if(anchor) { anchor.scrollIntoView({behavior: "auto", block: "start"}); }
       }, 200);
     </script>
-    """,
-    unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 
     st.markdown("""
     <style>
