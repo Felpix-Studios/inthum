@@ -37,7 +37,7 @@ def intro_page():
     st.markdown("""
     <a id=\"top-anchor\"></a>
     <script>
-        var body = window.parent.document.querySelector('.main');
+        var body = window.parent.document.querySelector(.stApp);
         if (body) {
             body.scrollTop = 0;
         }
@@ -192,7 +192,7 @@ def questions_page():
     st.markdown("""
     <a id=\"top-anchor\"></a>
     <script>
-        var body = window.parent.document.querySelector('.main');
+        var body = window.parent.document.querySelector(.stApp);
         if (body) {
             body.scrollTop = 0;
         }
@@ -313,7 +313,7 @@ def results_page():
     st.markdown("""
     <a id=\"top-anchor\"></a>
     <script>
-        var body = window.parent.document.querySelector('.main');
+        var body = window.parent.document.querySelector(.stApp);
         if (body) {
             body.scrollTop = 0;
         }
