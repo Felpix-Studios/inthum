@@ -51,35 +51,68 @@ def intro_page():
       margin: 0 auto;
       gap: 0.1rem !important;
     }
+    /* Reduce gap for stHorizontalBlock (Streamlit columns) on small screens and left-align buttons */
     @media (max-width: 600px) {
       .likert-group {
         gap: 0.05rem !important;
+        justify-content: flex-start !important;
       }
       .stHorizontalBlock {
         gap: 0.05rem !important;
+        justify-content: flex-start !important;
+      }
+      .stVerticalBlock {
+        gap: 0.6rem !important;
       }
       .likert-group button,
-      .likert-group .force-active-button {
+      .force-active-button {
         margin-top: 0.1rem !important;
         margin-bottom: 0.1rem !important;
         padding-top: 0.15rem !important;
         padding-bottom: 0.15rem !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        display: block !important;
+      }
+      .likert-group .force-active-button {
+        margin-top: 0.1rem !important;
+        margin-bottom: 0.1rem !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        display: block !important;
+        /* Ensure active button stays left-aligned and same size as others */
       }
       .center-button {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
+        justify-content: flex-start !important;
+      }
+      .center-button button {
+        margin-left: 0 !important;
+        margin-right: auto !important;
       }
       .stButton > button {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
       }
     }
+                
     .force-active-button {
         background-color: rgb(255, 75, 75) !important;
         color: white !important;
         border: 1px solid rgb(255, 75, 75) !important;
         box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
         cursor: default;
+        margin-top: 0.1rem !important;
+        margin-bottom: 0.1rem !important;
+        padding-top: 0.15rem !important;
+        padding-bottom: 0.15rem !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        display: block !important;
+                
     }
     .center-button {
       display: flex !important;
@@ -151,41 +184,17 @@ def questions_page():
         padding: 0.25rem 0.75rem;
         font-weight: 500;
         border-radius: 0.5rem;
-        text-align: center;
-        margin: 0 auto;
+        text-align: left;
+        margin: 0.1rem 0 0.1rem 0;
         display: block;
+        box-sizing: border-box;
     }
     .likert-group {
-      max-width: 800px;
+      max-width: 480px;
       margin: 0 auto;
-      gap: 0.1rem !important;
-    }
-    /* Reduce gap for stHorizontalBlock (Streamlit columns) on small screens */
-    @media (max-width: 600px) {
-      .likert-group {
-        gap: 0.05rem !important;
-      }
-      .stHorizontalBlock {
-        gap: 0.05rem !important;
-      }
-      .stVerticalBlock {
-        gap: 0.6rem !important;
-      }
-      .likert-group button,
-      .likert-group .force-active-button {
-        margin-top: 0.1rem !important;
-        margin-bottom: 0.1rem !important;
-        padding-top: 0.15rem !important;
-        padding-bottom: 0.15rem !important;
-      }
-      .center-button {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-      }
-      .stButton > button {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-      }
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
     }
     .force-active-button {
         background-color: rgb(255, 75, 75) !important;
@@ -194,29 +203,15 @@ def questions_page():
         box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
         cursor: default;
     }
-    
-    .center-button {
-      display: flex !important;
-      justify-content: center !important;
-    }
-    .center-button button {
-      margin: 0 auto !important;
-    }
-    div[data-testid="stButton"] {
-        display: flex;
-        justify-content: center;
-    }
     </style>
     """, unsafe_allow_html=True)
-
     st.html("""
       <style>
           .stMainBlockContainer {
               max-width:72rem;
           }
       </style>
-      """
-    )
+      """)
     response_dict = {}
     likert_options = {
         1: "Not at All",
@@ -226,7 +221,6 @@ def questions_page():
         5: "Very Well"
     }
     st.write("*How well do each of the following statements apply to you?*")
-
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
     for i, question in enumerate(QUESTIONS):
@@ -234,38 +228,29 @@ def questions_page():
         if f"response_{i}" not in st.session_state:
             st.session_state[f"response_{i}"] = None
         st.markdown('<div class = "likert-group">', unsafe_allow_html=True)
-        button_cols = st.columns(7)
-        labels = list(likert_options.values())
-        for j in range(7):
-            with button_cols[j]:
-                if 0 <= j <= 4:  # Place buttons in the first 5 columns (left-aligned)
-                    label = labels[j]
-                    btn_key = f"btn_{i}_{j}"
-                    is_selected = st.session_state[f"response_{i}"] == j + 1
-                    st.markdown('<div class="center-button">', unsafe_allow_html=True)
-                    if not is_selected:
-                        if(st.button(label, key=btn_key)):
-                            st.session_state[f"response_{i}"] = j + 1
-                            st.session_state.responses_temp[question] = j + 1
-                            st.rerun()
-                    else:
-                        st.markdown(
-                            f"<button class ='force-active-button'>{label}</button>",
-                            unsafe_allow_html=True
-                        )
-                    st.markdown("</div>", unsafe_allow_html=True)
-                else:
-                    st.write("")
-        st.markdown("</div>", unsafe_allow_html=True) 
+        for j in range(1, 6):
+            label = likert_options[j]
+            btn_key = f"btn_{i}_{j}"
+            is_selected = st.session_state[f"response_{i}"] == j
+            if not is_selected:
+                if st.button(label, key=btn_key):
+                    st.session_state[f"response_{i}"] = j
+                    st.session_state.responses_temp[question] = j
+                    st.rerun()
+            else:
+                st.markdown(
+                    f"<button class ='force-active-button'>{label}</button>",
+                    unsafe_allow_html=True
+                )
+        st.markdown("</div>", unsafe_allow_html=True)
         response_dict[question] = st.session_state[f"response_{i}"]
     st.markdown("---")
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         submit_clicked = st.button("Submit All Answers", use_container_width=True, key="submit_all")
-
         if st.button("Back to Introduction", key="back_intro", use_container_width=True):
-          st.session_state.current_page = "intro"
-          st.rerun()
+            st.session_state.current_page = "intro"
+            st.rerun()
     if submit_clicked:
         missing = [q for q, ans in response_dict.items() if ans is None]
         if missing:
