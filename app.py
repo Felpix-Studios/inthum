@@ -198,7 +198,7 @@ def questions_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 200);
+      }, 500);
     </script>
     """, unsafe_allow_html=True)
 
@@ -320,7 +320,7 @@ def results_page():
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
-      }, 200);
+      }, 500);
     </script>
     """, unsafe_allow_html=True)
 
