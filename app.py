@@ -92,6 +92,13 @@ def intro_page():
         display: flex;
         justify-content: center;
     }
+    p:not(button p) {
+      margin-bottom: 0.5rem !important;
+    }
+    li{
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -108,7 +115,7 @@ def intro_page():
     st.title("Intellectual Humility Assessment")
     st.write(
         """
-        Do you have an intellectually humble mindset? Use this tool to find out.
+        ##### Do you have an intellectually humble mindset? Use this quiz to find out..
 
         **What is intellectual humility?**
         - Being open to new ideas
@@ -119,13 +126,13 @@ def intro_page():
 
         **Why should I care about intellectual humility?**
 
-        Research suggests that [intellectual humility](https://www.templeton.org/news/what-is-intellectual-humility) may improve well-being, enhance tolerance from other perspectives, and promote inquiry and learning. Understanding our intellectual humility is an important step in learning about our own blindspots.
+        Research shows [intellectual humility](https://www.templeton.org/news/what-is-intellectual-humility) enhances tolerance from other perspectives and promotes inquiry. Understanding our intellectual humility is an important step in learning about our own blindspots.
 
         **Instructions**
 
-        This tool will ask you a series of questions to generate your intellectual humility score. Your score is then compared to the average score from a previous [study](https://psycnet.apa.org/record/2016-23828-044) on intellectual humility. For each question, please select the option that indicates how well, if at all, you believe the phrase applies to yourself. 
+        This quiz asks six questions and will compare your score to the general public (Leary et al., 2016).
 
-        This quiz is based on the scale developed by [Leary et al.](https://pubmed.ncbi.nlm.nih.gov/28903672/) in their research on the features of intellectual humility. This tool is currently experimental and was partially supported by the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).
+        *This quiz is based on the scale developed by [Leary et al.](https://pubmed.ncbi.nlm.nih.gov/28903672/) in their research on the features of intellectual humility. This tool is currently experimental and was partially supported by the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).*
         """
     )
     col1, col2, col3 = st.columns([1, 1, 1])
@@ -218,6 +225,8 @@ def questions_page():
         4: "Well",
         5: "Very Well"
     }
+    st.write("*How well do each of the following statements apply to you?*")
+
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
     for i, question in enumerate(QUESTIONS):
@@ -229,15 +238,15 @@ def questions_page():
         labels = list(likert_options.values())
         for j in range(7):
             with button_cols[j]:
-                if 1 <= j <= 5:
-                    label = labels[j-1]
+                if 0 <= j <= 4:  # Place buttons in the first 5 columns (left-aligned)
+                    label = labels[j]
                     btn_key = f"btn_{i}_{j}"
-                    is_selected = st.session_state[f"response_{i}"] == j
+                    is_selected = st.session_state[f"response_{i}"] == j + 1
                     st.markdown('<div class="center-button">', unsafe_allow_html=True)
                     if not is_selected:
                         if(st.button(label, key=btn_key)):
-                            st.session_state[f"response_{i}"] = j
-                            st.session_state.responses_temp[question] = j
+                            st.session_state[f"response_{i}"] = j + 1
+                            st.session_state.responses_temp[question] = j + 1
                             st.rerun()
                     else:
                         st.markdown(
@@ -324,9 +333,11 @@ def results_page():
         return
     scores = [resp["scale_answer"] for resp in st.session_state.responses]
     total_score = sum(scores)
-    st.markdown("## Final Assessment")
-    st.write(f"**Total Score:** {total_score} out of {5 * len(scores)}")
-    st.markdown("#### How does your score compare to the average person?")
+    st.markdown("## Your Score")
+
+    st.write(f"##### Your score is {total_score} out of {5 * len(scores)}")
+
+    st.markdown("##### How does your score compare to the average person?")
     if total_score >= 25:
         st.success("Your score places you in the **top 25%** for intellectual humility. 💡")
     elif total_score <= 20:
@@ -380,19 +391,19 @@ def results_page():
     
 
     
+    
+    st.write("""
+    **What Now?**
+    
+    Use our other tool, [Train your Intellectual Humility](https://inthum2.streamlit.app), to learn how to identify and use intellectually humble language.
+    """)
+
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button("Reset Test", key="reset_test", use_container_width=True):
             reset_test()
             st.session_state.current_page = "intro"
             st.rerun()
-        
-    st.write("---")
-    st.write("""
-    **What Should I Do Next?**
-             
-    By now, we hope you've learned a little bit about your intellectual humility. If you didn't score as high as you had hoped, click here to use our other tool, [Train your Intellectual Humility](https://inthum2.streamlit.app). Here, you can start practicing identifying intellectually humble language. 
-    """)
 
 # -- Streamlit Application --
 def main():
