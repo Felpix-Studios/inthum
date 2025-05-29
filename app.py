@@ -261,6 +261,7 @@ def questions_page():
         4: "Well",
         5: "Very Well"
     }
+    st.title("")
     st.write("*How well do each of the following statements apply to you?*")
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
@@ -374,7 +375,7 @@ def results_page():
         return
     scores = [resp["scale_answer"] for resp in st.session_state.responses]
     total_score = sum(scores)
-    st.markdown("## Your Score")
+    st.title("Your Score")
 
     st.write(f"##### Your score is {total_score} out of {5 * len(scores)}")
 
