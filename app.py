@@ -169,7 +169,7 @@ def intro_page():
         display: flex;
         justify-content: center;
     }
-    p:not(button p) {
+    p:not(button p):not(.stAlertContainer p):not(.stAlertSuccess p):not(.stAlertInfo p):not(.stAlertError p) {
       margin-bottom: 0.5rem !important;
     }
     li{
@@ -213,6 +213,8 @@ def intro_page():
         *This quiz is based on the scale developed by [Leary et al.](https://pubmed.ncbi.nlm.nih.gov/28903672/) in their research on the features of intellectual humility. This quiz is currently experimental and was partially supported by the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).*
         """
     )
+
+    st.markdown("<div style='margin-bottom:0.5rem;'></div>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button("Start Assessment", key="to_questions", use_container_width=True):
@@ -372,6 +374,9 @@ def results_page():
     div[data-testid="stButton"] {
         display: flex;
         justify-content: center;
+    }
+    p:not(button p):not(.stAlertContainer p):not(.stAlertSuccess p):not(.stAlertInfo p):not(.stAlertError p) {
+      margin-bottom: 0.5rem !important;
     }
                 
 
