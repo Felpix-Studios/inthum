@@ -208,7 +208,7 @@ def intro_page():
 
         **Instructions**
 
-        This quiz asks six questions to generate your intellectual humility score and will compare your score to the general public (Leary et al., 2016).
+        This quiz asks six questions to generate your intellectual humility score and will compare your score to the general public.
 
         *This quiz is based on the scale developed by [Leary et al.](https://pubmed.ncbi.nlm.nih.gov/28903672/) in their research on the features of intellectual humility. This quiz is currently experimental and was partially supported by the John Templeton Foundation. Please provide feedback and report any issues to [info@polarizationlab.com](mailto:info@polarizationlab.com).*
         """
@@ -428,32 +428,41 @@ def results_page():
         mode='lines',
         line=dict(color='skyblue'),
         fill='tozeroy',
-        name='Density',
-        hoverinfo='skip'
+        name='',
+        hoverinfo='skip',
+        showlegend=False
     ))
     fig.add_trace(go.Scatter(
         x=[mean_score, mean_score],
         y=[0, norm.pdf(mean_score, loc=mean_score, scale=std_dev)],
         mode='lines',
-        line=dict(color='red', dash='dash'),
-        name='Mean = 22.64',
+        line=dict(color='red', dash='dash', width=3),
+        name='Population Average = 22.64',
         hoverinfo='skip'
     ))
     fig.add_trace(go.Scatter(
         x=[total_score, total_score],
         y=[0, 0.1],
         mode='lines',
-        line=dict(color='green', dash='dot'),
+        line=dict(color='green', dash='dot', width=3),
         name=f'Your Score = {total_score}',
         hoverinfo='skip'
     ))
     fig.update_layout(
-        title='Estimated Density of Intellectual Humility Scores',
+        title='Estimated Distribution of Intellectual Humility Scores',
         xaxis_title='Total Score',
-        yaxis_title='Density',
+        yaxis_title='Distribution',
+        yaxis=dict(showticklabels=False),
         xaxis=dict(range=[6, 30]),
         template='simple_white',
-        showlegend=True
+        showlegend=True,
+        legend=dict(
+            orientation='h',
+            yanchor='bottom',
+            xanchor='center',
+            y= -0.4,
+            x=0.5,
+          ),
     )
     st.plotly_chart(fig, use_container_width=True)
     
@@ -465,7 +474,7 @@ def results_page():
     
     Use our other tool, [Train your Intellectual Humility](https://inthum2.streamlit.app), to learn how to identify and use intellectually humble language.
     """)
-
+    st.markdown("<div style='margin-bottom:0.5rem;'></div>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button("Reset Test", key="reset_test", use_container_width=True):
