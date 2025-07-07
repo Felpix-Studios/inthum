@@ -183,7 +183,7 @@ def intro_page():
     st.html("""
       <style>
           .stMainBlockContainer {
-              max-width:72rem;
+              max-width:50rem;
           }
       </style>
       """
@@ -267,14 +267,19 @@ def questions_page():
         box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
         cursor: default;
     }
-
+    
+    .question-text {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
     </style>
     """, unsafe_allow_html=True)
 
     st.html("""
       <style>
           .stMainBlockContainer {
-              max-width:72rem;
+              max-width:50rem;
           }
       </style>
       """)
@@ -287,13 +292,13 @@ def questions_page():
         5: "Very Well"
     }
     st.logo(logo_path, size = "large", link = "https://www.polarizationlab.com/")
-    st.write("*How well do each of the following statements apply to you?*")
+    st.write("### How well do each of the following statements apply to you?")
     
     
     if "responses_temp" not in st.session_state:
         st.session_state.responses_temp = {}
     for i, question in enumerate(QUESTIONS):
-        st.markdown(f"**Q{i + 1}. {question}**")
+        st.markdown(f"<div class='question-text'>Q{i + 1}. {question}</div>", unsafe_allow_html=True)
         if f"response_{i}" not in st.session_state:
             st.session_state[f"response_{i}"] = None
         st.markdown('<div class = "likert-group">', unsafe_allow_html=True)
@@ -386,7 +391,7 @@ def results_page():
     st.html("""
       <style>
           .stMainBlockContainer {
-              max-width:72rem;
+              max-width:50rem;
           }
       </style>
       """
