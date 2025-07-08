@@ -240,7 +240,7 @@ def questions_page():
         margin: 0px;
         line-height: 1.6;
         text-transform: none;
-        font-size: inherit;
+        font-size: 14px;
         font-family: inherit;
         color: inherit;
         width: auto;
@@ -260,9 +260,14 @@ def questions_page():
       flex-direction: column;
       gap: 0.1rem;
     }
+    
+    .stButton button p{
+      font-size: 14px !important;
+    }
     .force-active-button {
         background-color: rgb(255, 75, 75) !important;
         color: white !important;
+        font-size: 14px !important;
         border: 1px solid rgb(255, 75, 75) !important;
         box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
         cursor: default;
