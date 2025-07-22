@@ -337,13 +337,12 @@ def questions_page():
     <div class="progress-bar">
         <div class="progress-fill" style="width: {progress_percent}%;"></div>
     </div>
-    <p style="text-align: center; color: #666; margin-bottom: 1rem;">Question {current_index + 1} of {total_questions}</p>
     """, unsafe_allow_html=True)
     
     st.write("### How well does the following statement apply to you?")
     
     # Display current question
-    st.markdown(f"<div class='question-text'>Q{current_index + 1}. {current_question}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='question-text'>{current_question}</div>", unsafe_allow_html=True)
     
     # Display answer options
     st.markdown('<div class = "likert-group">', unsafe_allow_html=True)
