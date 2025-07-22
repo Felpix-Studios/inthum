@@ -67,8 +67,9 @@ def reset_test():
     
     if "responses_temp" in st.session_state:
         del st.session_state["responses_temp"]
-
-      
+    
+    if "current_question_index" in st.session_state:
+        del st.session_state["current_question_index"]
 
     for key in ['chat_history', 'responses', 'submitted_all', 'final_generated']:
         if key in st.session_state:
@@ -176,7 +177,15 @@ def intro_page():
       margin-top: 0 !important;
       margin-bottom: 0 !important;
     }
-
+    button[kind="secondary"]:hover {
+      border-color: #6e32ce !important;
+      color: #6e32ce !important;
+    }
+    button[kind="secondary"]:active {
+      background-color: #6e32ce !important;
+      color: white !important;
+      border-color: #6e32ce !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -189,7 +198,6 @@ def intro_page():
       """
     )
     
-    st.logo(logo_path, size = "large", link = "https://www.polarizationlab.com/")
     st.title("Intellectual Humility Assessment")
     st.write(
         """
@@ -240,7 +248,6 @@ def questions_page():
         margin: 0px;
         line-height: 1.6;
         text-transform: none;
-        font-size: 14px;
         font-family: inherit;
         color: inherit;
         width: auto;
@@ -261,13 +268,10 @@ def questions_page():
       gap: 0.1rem;
     }
     
-    .stButton button p{
-      font-size: 14px !important;
-    }
+
     .force-active-button {
         background-color: rgb(255, 75, 75) !important;
         color: white !important;
-        font-size: 14px !important;
         border: 1px solid rgb(255, 75, 75) !important;
         box-shadow: 0 0 0 0.1rem rgba(255, 75, 75, 0.6) !important;
         cursor: default;
@@ -277,6 +281,20 @@ def questions_page():
         font-weight: 600;
         font-size: 1.2rem;
         margin-bottom: 0.5rem;
+    }
+    
+    .progress-bar {
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        height: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .progress-fill {
+        background-color: rgb(255, 75, 75);
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s ease;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -288,65 +306,131 @@ def questions_page():
           }
       </style>
       """)
-    response_dict = {}
+    
+    # Initialize session state for question navigation
+    if "current_question_index" not in st.session_state:
+        st.session_state.current_question_index = 0
+    if "responses_temp" not in st.session_state:
+        st.session_state.responses_temp = {}
+    
+    # Initialize all response keys
+    for i in range(len(QUESTIONS)):
+        if f"response_{i}" not in st.session_state:
+            st.session_state[f"response_{i}"] = None
+    
+    current_index = st.session_state.current_question_index
+    total_questions = len(QUESTIONS)
+    current_question = QUESTIONS[current_index]
+    
     likert_options = {
         1: "Not at All",
-        2: "Not Well",
+        2: "Not Well", 
         3: "Somewhat Well",
         4: "Well",
         5: "Very Well"
     }
-    st.logo(logo_path, size = "large", link = "https://www.polarizationlab.com/")
-    st.write("### How well do each of the following statements apply to you?")
     
     
-    if "responses_temp" not in st.session_state:
-        st.session_state.responses_temp = {}
-    for i, question in enumerate(QUESTIONS):
-        st.markdown(f"<div class='question-text'>Q{i + 1}. {question}</div>", unsafe_allow_html=True)
-        if f"response_{i}" not in st.session_state:
-            st.session_state[f"response_{i}"] = None
-        st.markdown('<div class = "likert-group">', unsafe_allow_html=True)
-        for j in range(1, 6):
-            label = likert_options[j]
-            btn_key = f"btn_{i}_{j}"
-            is_selected = st.session_state[f"response_{i}"] == j
-            if not is_selected:
-                if st.button(label, key=btn_key):
-                    st.session_state[f"response_{i}"] = j
-                    st.session_state.responses_temp[question] = j
+    # Progress bar
+    progress_percent = ((current_index + 1) / total_questions) * 100
+    st.markdown(f"""
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: {progress_percent}%;"></div>
+    </div>
+    <p style="text-align: center; color: #666; margin-bottom: 1rem;">Question {current_index + 1} of {total_questions}</p>
+    """, unsafe_allow_html=True)
+    
+    st.write("### How well does the following statement apply to you?")
+    
+    # Display current question
+    st.markdown(f"<div class='question-text'>Q{current_index + 1}. {current_question}</div>", unsafe_allow_html=True)
+    
+    # Display answer options
+    st.markdown('<div class = "likert-group">', unsafe_allow_html=True)
+    for j in range(1, 6):
+        label = likert_options[j]
+        btn_key = f"btn_{current_index}_{j}"
+        is_selected = st.session_state[f"response_{current_index}"] == j
+        if not is_selected:
+            if st.button(label, key=btn_key):
+                st.session_state[f"response_{current_index}"] = j
+                st.session_state.responses_temp[current_question] = j
+                st.rerun()
+        else:
+            st.markdown(
+                f"<button class ='force-active-button'>{label}</button>",
+                unsafe_allow_html=True
+            )
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Navigation buttons
+    if current_index == 0:
+        # First question: Back to Introduction and Next
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("Back to Introduction", key="back_intro", use_container_width=True):
+                st.session_state.current_page = "intro"
+                st.rerun()
+        with col2:
+            current_answer = st.session_state[f"response_{current_index}"]
+            if current_answer is not None:
+                if st.button("Next Question", key="next_question", use_container_width=True):
+                    st.session_state.current_question_index += 1
                     st.rerun()
             else:
-                st.markdown(
-                    f"<button class ='force-active-button'>{label}</button>",
-                    unsafe_allow_html=True
-                )
-        st.markdown("</div>", unsafe_allow_html=True)
-        response_dict[question] = st.session_state[f"response_{i}"]
-    st.markdown("---")
-
+                st.button("Next Question", key="next_question_disabled", use_container_width=True, disabled=True)
+                st.caption("Please select an answer to continue")
+                
+    elif current_index == total_questions - 1:
+        # Last question: Previous and Submit All Answers
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("Previous Question", key="prev_question", use_container_width=True):
+                st.session_state.current_question_index -= 1
+                st.rerun()
+        with col2:
+            current_answer = st.session_state[f"response_{current_index}"]
+            if current_answer is not None:
+                if st.button("Submit All Answers", key="submit_all", use_container_width=True):
+                    # Check if all questions are answered
+                    response_dict = {}
+                    for i, question in enumerate(QUESTIONS):
+                        response_dict[question] = st.session_state[f"response_{i}"]
+                    
+                    missing = [q for q, ans in response_dict.items() if ans is None]
+                    if missing:
+                        st.error("Please answer all questions before submitting.")
+                    else:
+                        st.session_state.responses = []
+                        for idx, (q, ans) in enumerate(response_dict.items()):
+                            st.session_state.responses.append({
+                                "question": q,
+                                "scale_answer": int(ans)
+                            })
+                        st.session_state.submitted_all = True
+                        st.session_state.current_page = "results"
+                        st.rerun()
+            else:
+                st.button("Submit All Answers", key="submit_all_disabled", use_container_width=True, disabled=True)
+    else:
+        # Middle questions: Previous and Next
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("Previous Question", key="prev_question", use_container_width=True):
+                st.session_state.current_question_index -= 1
+                st.rerun()
+        with col2:
+            current_answer = st.session_state[f"response_{current_index}"]
+            if current_answer is not None:
+                if st.button("Next Question", key="next_question", use_container_width=True):
+                    st.session_state.current_question_index += 1
+                    st.rerun()
+            else:
+                st.button("Next Question", key="next_question_disabled", use_container_width=True, disabled=True)
+                
     
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col2:
-        submit_clicked = st.button("Submit All Answers", use_container_width=True, key="submit_all")
-        if st.button("Back to Introduction", key="back_intro", use_container_width=True):
-            st.session_state.current_page = "intro"
-            st.rerun()
-
-    if submit_clicked:
-        missing = [q for q, ans in response_dict.items() if ans is None]
-        if missing:
-            st.error("Please answer all questions before submitting.")
-        else:
-            st.session_state.responses = []
-            for idx, (q, ans) in enumerate(response_dict.items()):
-                st.session_state.responses.append({
-                    "question": q,
-                    "scale_answer": int(ans)
-                })
-            st.session_state.submitted_all = True
-            st.session_state.current_page = "results"
-            st.rerun()
     scroll_to_top()
 
             
@@ -401,7 +485,6 @@ def results_page():
       </style>
       """
     )
-    st.logo(logo_path, size = "large", link = "https://www.polarizationlab.com/")
     if not st.session_state.get("submitted_all", False):
         st.warning("You must answer all questions first.")
         if st.button("Go to Questions", key="to_questions_from_results"):
