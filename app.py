@@ -177,13 +177,19 @@ def intro_page():
       margin-top: 0 !important;
       margin-bottom: 0 !important;
     }
-    button[kind="secondary"]:hover {
-      border-color: #6e32ce !important;
-      color: #6e32ce !important;
-    }
-    button[kind="secondary"]:active {
+    button[kind="primary"] {
       background-color: #6e32ce !important;
       color: white !important;
+      border-color: #6e32ce !important;
+    }
+    button[kind="primary"]:hover {
+      border-color: #5828A4 !important;
+      color: white !important;
+      background-color: #5828A4 !important;
+    }
+    button[kind="primary"]:active {
+      background-color: white !important;
+      color: #6e32ce !important;
       border-color: #6e32ce !important;
     }
     </style>
@@ -225,7 +231,7 @@ def intro_page():
     st.markdown("<div style='margin-bottom:0.5rem;'></div>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
-        if st.button("Start Assessment", key="to_questions", use_container_width=True):
+        if st.button("Start Assessment", key="to_questions", use_container_width=True, type="primary"):
             st.session_state.current_page = "questions"
             st.rerun()
     
