@@ -199,6 +199,7 @@ def intro_page():
       <style>
           .stMainBlockContainer {
               max-width:50rem;
+              padding-top: 3rem !important;
           }
       </style>
       """
@@ -309,6 +310,7 @@ def questions_page():
       <style>
           .stMainBlockContainer {
               max-width:50rem;
+              padding-top: 3rem !important;
           }
       </style>
       """)
@@ -486,6 +488,7 @@ def results_page():
       <style>
           .stMainBlockContainer {
               max-width:50rem;
+              padding-top: 3rem !important;
           }
       </style>
       """
