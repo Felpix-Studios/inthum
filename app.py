@@ -576,7 +576,7 @@ def results_page():
     st.write("""
     **What Now?**
     
-    Use our other tool, [Train your Intellectual Humility](https://inthum2.streamlit.app), to learn how to identify and use intellectually humble language.
+    Use our other tool, [Train your Intellectual Humility](https://www.polarizationlab.com/train-your-intellectual-humility), to learn how to identify and use intellectually humble language.
     """)
     st.markdown("<div style='margin-bottom:0.5rem;'></div>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
