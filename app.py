@@ -192,6 +192,10 @@ def intro_page():
       color: #6e32ce !important;
       border-color: #6e32ce !important;
     }
+    
+    header{
+      display:none !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -303,6 +307,9 @@ def questions_page():
         height: 100%;
         border-radius: 10px;
         transition: width 0.3s ease;
+    }
+    header{
+      display:none !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -482,7 +489,9 @@ def results_page():
       margin-bottom: 0.5rem !important;
     }
                 
-
+    header{
+      display:none !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
